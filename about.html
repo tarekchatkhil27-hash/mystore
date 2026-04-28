@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="bn" class="lang-bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#4F46E5"/>
+<title>আমাদের সম্পর্কে | Smart Supper Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#4F46E5;--primary-dark:#3730A3;--accent:#F43F5E;
+  --success:#10B981;--bg:#FAFAFA;--surface:#fff;--surface2:#F3F4F6;
+  --text:#111827;--text2:#6B7280;--muted:#9CA3AF;--border:#E5E7EB;
+  --font:'Tiro Bangla',serif;--hh:56px;--nh:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  padding-bottom:calc(var(--nh)+16px);-webkit-font-smoothing:antialiased}
+.lang-en *{font-family:'Times New Roman',Times,serif}
+.lang-bn *{font-family:'Tiro Bangla',serif}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
+img{max-width:100%;display:block}
+.tap{-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .12s}
+.tap:active{transform:scale(.96);opacity:.82}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fu .45s ease both}
+
+/* Header */
+#hdr{position:sticky;top:0;z-index:900;height:var(--hh);
+  background:rgba(255,255,255,.93);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.hi{display:flex;align-items:center;padding:0 12px;height:100%;
+  max-width:480px;margin:0 auto;gap:8px}
+.ib{width:38px;height:38px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;color:var(--text);flex-shrink:0}
+.ib:active{background:var(--surface2)}
+.ib svg{width:20px;height:20px}
+.ht{flex:1;font-size:1rem;font-weight:700}
+.ltb{height:28px;padding:0 11px;border-radius:999px;background:var(--primary);
+  color:#fff;font-size:.7rem;font-weight:700;
+  font-family:'Tiro Bangla','Times New Roman',serif;
+  transition:transform .15s;flex-shrink:0}
+.ltb:active{transform:scale(.9)}
+
+/* Hero */
+#hero{background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 55%,#a855f7 100%);
+  padding:40px 20px 48px;text-align:center;color:#fff;position:relative;overflow:hidden}
+#hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%,rgba(255,255,255,.08) 0%,transparent 60%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;padding:5px 14px;font-size:.75rem;font-weight:600;
+  margin-bottom:16px;backdrop-filter:blur(6px)}
+.hero-name{font-size:1.65rem;font-weight:700;line-height:1.25;
+  margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hero-tagline{font-size:.9rem;opacity:.88;line-height:1.6;
+  max-width:280px;margin:0 auto}
+
+/* Sections */
+.sec{padding:28px 16px;max-width:480px;margin:0 auto}
+.sec-title{font-size:1.1rem;font-weight:700;color:var(--text);
+  margin-bottom:16px;position:relative;padding-left:12px}
+.sec-title::before{content:'';position:absolute;left:0;top:50%;
+  transform:translateY(-50%);width:4px;height:20px;
+  background:var(--primary);border-radius:2px}
+
+/* Story */
+#story-section{background:var(--surface);border-radius:22px;
+  margin:16px;padding:22px 18px;
+  box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.story-text{font-size:.88rem;color:var(--text2);line-height:1.85;
+  margin-bottom:12px}
+.story-text:last-child{margin-bottom:0}
+
+/* Values */
+#values-section{padding:20px 16px}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.val-card{background:var(--surface);border-radius:16px;
+  padding:16px 10px;text-align:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  border:1px solid var(--border)}
+.val-icon{font-size:1.6rem;margin-bottom:8px}
+.val-label{font-size:.72rem;font-weight:700;color:var(--text2);line-height:1.4}
+
+/* Stats */
+#stats-section{background:linear-gradient(135deg,#4F46E5,#7C3AED);
+  margin:0 16px;border-radius:22px;padding:24px 16px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{text-align:center;color:#fff}
+.stat-num{font-size:1.5rem;font-weight:700;line-height:1.1;margin-bottom:4px}
+.stat-lbl{font-size:.68rem;opacity:.8;font-weight:500;line-height:1.3}
+
+/* CTA */
+#cta-section{padding:24px 16px;text-align:center;max-width:480px;margin:0 auto}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;background:var(--primary);color:#fff;
+  border-radius:999px;font-size:.95rem;font-weight:700;
+  font-family:var(--font);
+  box-shadow:0 4px 14px rgba(79,70,229,.35);
+  transition:transform .15s,box-shadow .15s}
+.cta-btn:active{transform:scale(.96);box-shadow:none}
+.cta-btn svg{width:18px;height:18px}
+
+/* Bottom nav */
+#bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);
+  display:flex;align-items:stretch;z-index:800;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.nt{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;color:var(--muted);font-size:.6rem;
+  font-weight:600;position:relative;padding:6px 0;
+  font-family:var(--font);-webkit-tap-highlight-color:transparent}
+.nt:active{background:var(--surface2)}
+.nt.active{color:var(--primary)}
+.nt svg{width:22px;height:22px}
+.ni{position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:3px;background:var(--primary);
+  border-radius:0 0 4px 4px;opacity:0;transition:opacity .2s}
+.nt.active .ni{opacity:1}
+.cb{position:relative;display:inline-block}
+.cart-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+  padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;
+  font-size:.58rem;font-weight:700;display:inline-flex;
+  align-items:center;justify-content:center}
+.cart-badge[data-count="0"]{display:none}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="hi">
+    <button class="ib tap" onclick="history.back()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <span class="ht" data-i18n="about_us">আমাদের সম্পর্কে</span>
+    <button class="ltb tap"
+            onclick="window.i18n&&window.i18n.toggleLanguage()"
+            data-i18n="lang_toggle">EN</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section id="hero" class="fu">
+  <div class="hero-badge">🏪 <span data-i18n="store_name">স্মার্ট সুপার শপ</span></div>
+  <h1 class="hero-name" id="hero-store-name" data-i18n="store_name">স্মার্ট সুপার শপ</h1>
+  <p class="hero-tagline" data-i18n="hero_subtitle">মানসম্পন্ন পণ্য আপনার দোরগোড়ায়</p>
+</section>
+
+<!-- Our Story -->
+<section id="story-section" class="fu" style="animation-delay:.1s">
+  <div class="sec-title" data-i18n="our_story">আমাদের গল্প</div>
+  <p class="story-text bn-text" id="story-p1-bn">
+    স্মার্ট সুপার শপ একটি সহজ লক্ষ্য নিয়ে যাত্রা শুরু করেছে — সেরা দামে তাজা ও মানসম্পন্ন পণ্য প্রতিটি ঘরে পৌঁছে দেওয়া। মুদিখানা থেকে বস্ত্র এবং তাজা ফলমূল পর্যন্ত, আমরা প্রতিটি পণ্য সযত্নে বাছাই করি যেন আপনি সবসময় সেরাটাই পান।
+  </p>
+  <p class="story-text bn-text" id="story-p2-bn">
+    আমরা বিশ্বাস করি কেনাকাটা হওয়া উচিত সহজ, সাশ্রয়ী এবং বিশ্বস্ত। দ্রুত ডেলিভারি ও বন্ধুত্বপূর্ণ সেবায় আমরা আপনার পাড়ার দোকান — শুধু অনলাইনে। আমাদের লক্ষ্য হলো প্রতিটি গ্রাহকের মুখে হাসি ফোটানো।
+  </p>
+  <p class="story-text en-text" id="story-p1-en" style="display:none">
+    Smart Supper Shop was founded with a simple mission — to bring fresh, quality products to every home at the best possible prices. From groceries to textiles and fresh fruits, we carefully select every item so you always get the very best.
+  </p>
+  <p class="story-text en-text" id="story-p2-en" style="display:none">
+    We believe shopping should be easy, affordable, and trustworthy. With fast delivery and friendly service, we are your neighbourhood store — just online. Our goal is to put a smile on every customer's face.
+  </p>
+</section>
+
+<!-- Values -->
+<section id="values-section" class="fu" style="animation-delay:.15s">
+  <div class="sec-title" style="margin:0 0 14px">Our Values</div>
+  <div class="values-grid">
+    <div class="val-card">
+      <div class="val-icon">🚚</div>
+      <div class="val-label" data-i18n="fast_delivery">দ্রুত ডেলিভারি</div>
+    </div>
+    <div class="val-card">
+      <div class="val-icon">💯</div>
+      <div class="val-label" data-i18n="quality_products">মানসম্পন্ন পণ্য</div>
+    </div>
+    <div class="val-card">
+      <div class="val-icon">🤝</div>
+      <div class="val-label" data-i18n="trusted_service">বিশ্বস্ত সেবা</div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section id="stats-section" class="fu" style="margin-bottom:16px;animation-delay:.2s">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num"><span class="count-up" data-target="500">0</span>+</div>
+      <div class="stat-lbl" data-i18n="happy_customers">সন্তুষ্ট গ্রাহক</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"><span class="count-up" data-target="50">0</span>+</div>
+      <div class="stat-lbl">Products<br/>পণ্য</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">5★</div>
+      <div class="stat-lbl">Rating<br/>রেটিং</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta-section" class="fu" style="animation-delay:.25s">
+  <a href="shop.html" class="cta-btn tap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="shop_now_cta">কেনাকাটা শুরু করুন</span>
+  </a>
+</section>
+
+<!-- Bottom Nav -->
+<nav id="bnav">
+  <a href="index.html" class="nt tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav_home">হোম</span>
+  </a>
+  <a href="shop.html" class="nt tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="nav_shop">শপ</span>
+  </a>
+  <a href="cart.html" class="nt tap">
+    <div class="ni"></div>
+    <div class="cb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" data-count="0" style="display:none">0</span>
+    </div>
+    <span data-i18n="nav_cart">কার্ট</span>
+  </a>
+  <a href="contact.html" class="nt tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0
+        013.1 10.81 19.79 19.79 0 01.06 2.22 2 2 0 012.03 0h3a2 2 0 012 1.72
+        c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6
+        l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+    </svg>
+    <span data-i18n="nav_contact">যোগাযোগ</span>
+  </a>
+</nav>
+
+<script src="js/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cart.js"></script>
+<script>
+var _counted = false;
+
+function showStory(lang) {
+  var isBn = lang === 'bn';
+  document.querySelectorAll('.bn-text').forEach(function(el) {
+    el.style.display = isBn ? 'block' : 'none';
+  });
+  document.querySelectorAll('.en-text').forEach(function(el) {
+    el.style.display = isBn ? 'none' : 'block';
+  });
+}
+
+function countUp() {
+  if (_counted) return;
+  _counted = true;
+  document.querySelectorAll('.count-up').forEach(function(el) {
+    var target = parseInt(el.dataset.target, 10);
+    var start  = 0;
+    var dur    = 1400;
+    var step   = 16;
+    var inc    = target / (dur / step);
+    var timer  = setInterval(function() {
+      start += inc;
+      if (start >= target) { start = target; clearInterval(timer); }
+      el.textContent = Math.floor(start);
+    }, step);
+  });
+}
+
+function setupCountObserver() {
+  var stats = document.getElementById('stats-section');
+  if (!stats) return;
+  if (!('IntersectionObserver' in window)) { countUp(); return; }
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { countUp(); io.disconnect(); }
+  }, { threshold: 0.3 });
+  io.observe(stats);
+}
+
+window.addEventListener('languageChanged', function(e) {
+  var lang = e.detail ? e.detail.lang : (localStorage.getItem('lang') || 'bn');
+  showStory(lang);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  var lang = localStorage.getItem('lang') || 'bn';
+  if (window.i18n) window.i18n.setLanguage(lang);
+  if (window.cart) window.cart.renderCartBadge();
+  showStory(lang);
+  setupCountObserver();
+});
+</script>
+</body>
+</html>

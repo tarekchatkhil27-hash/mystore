@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Admin | Smart Supper Shop</title>
+<link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Confirm dialog -->
+<div id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Are you sure?</div>
+    <div class="confirm-msg"  id="confirm-msg">This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="btn btn-ghost" onclick="confirmCancel()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmOK()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal overlay -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- Sidebar overlay (mobile) -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ── Navbar ──────────────────────────────────────────── -->
+<nav id="navbar">
+  <button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <span class="nav-logo">🏪 Smart Supper Shop</span>
+  <span class="nav-email" id="admin-email"></span>
+  <button class="logout-btn" onclick="logout()">Sign Out</button>
+</nav>
+
+<!-- ── Sidebar ─────────────────────────────────────────── -->
+<aside id="sidebar">
+  <nav class="sidebar-nav">
+    <div class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')">
+      <span class="ni">📊</span><span class="nl">Dashboard</span>
+    </div>
+    <div class="nav-item" data-section="products" onclick="showSection('products')">
+      <span class="ni">📦</span><span class="nl">Products</span>
+    </div>
+    <div class="nav-item" data-section="categories" onclick="showSection('categories')">
+      <span class="ni">🏷️</span><span class="nl">Categories</span>
+    </div>
+    <div class="nav-item" data-section="discounts" onclick="showSection('discounts')">
+      <span class="ni">🎁</span><span class="nl">Discounts</span>
+    </div>
+    <div class="nav-item" data-section="orders" onclick="showSection('orders')">
+      <span class="ni">📋</span><span class="nl">Orders</span>
+    </div>
+    <div class="nav-item" data-section="messages" onclick="showSection('messages')">
+      <span class="ni">📬</span><span class="nl">Messages</span>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="store-tag">স্মার্ট সুপার শপ</div>
+  </div>
+</aside>
+
+<!-- ── Main content ────────────────────────────────────── -->
+<main id="main">
+
+  <!-- DASHBOARD -->
+  <div class="section active" id="sec-dashboard">
+    <div class="section-header">
+      <span class="section-title">📊 Dashboard</span>
+      <button class="btn btn-primary" onclick="showSection('products');setTimeout(openAddProduct,400)">+ Add Product</button>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Sales</div>
+        <div class="stat-value" id="stat-sales">—</div>
+      </div>
+      <div class="stat-card orders">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="stat-orders">—</div>
+      </div>
+      <div class="stat-card products">
+        <div class="stat-label">Products</div>
+        <div class="stat-value" id="stat-products">—</div>
+      </div>
+      <div class="stat-card messages">
+        <div class="stat-label">Unread Messages</div>
+        <div class="stat-value" id="stat-messages">—</div>
+      </div>
+    </div>
+    <div id="low-stock-alerts"></div>
+    <div class="table-wrap">
+      <div class="table-head">
+        <span class="table-head-title">Recent Orders</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Order #</th><th>Customer</th>
+              <th>Total</th><th>Status</th><th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders-body">
+            <tr><td colspan="5" style="text-align:center;padding:16px">
+              <div class="spin spin-dark"></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="section" id="sec-products">
+    <div class="section-header">
+      <span class="section-title">📦 Products</span>
+      <button class="btn btn-primary" onclick="openAddProduct()">+ Add Product</button>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search products…"
+               oninput="_productSearch=this.value;renderProducts()"/>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div id="products-list"></div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="section" id="sec-categories">
+    <div class="section-header">
+      <span class="section-title">🏷️ Categories</span>
+      <button class="btn btn-primary" onclick="openAddCategory()">+ Add Category</button>
+    </div>
+    <div class="cat-grid" id="categories-grid">
+      <div style="padding:20px;text-align:center">
+        <div class="spin spin-dark"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCOUNTS -->
+  <div class="section" id="sec-discounts">
+    <div class="section-header">
+      <span class="section-title">🎁 Discounts</span>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn disc-tab active" data-disc-tab="list"
+              onclick="switchDiscTab('list')">All Discounts</button>
+      <button class="tab-btn disc-tab" data-disc-tab="add"
+              onclick="switchDiscTab('add')">+ Add New</button>
+    </div>
+
+    <!-- List -->
+    <div id="disc-list-section">
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Code</th><th>Type</th>
+                <th>Value</th><th>Applies To</th>
+                <th>Expiry</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="discounts-tbody">
+              <tr><td colspan="8" style="text-align:center;padding:16px">
+                <div class="spin spin-dark"></div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add form -->
+    <div id="disc-add-section" style="display:none">
+      <div class="table-wrap" style="padding:18px">
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Discount Name *</label>
+            <input id="disc-name" class="fi" placeholder="Summer Sale"/>
+          </div>
+          <div class="fg">
+            <label class="fl">Coupon Code (optional)</label>
+            <input id="disc-code" class="fi" placeholder="SAVE20" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Type</label>
+            <select id="disc-type" class="fi">
+              <option value="percent">Percentage Off (%)</option>
+              <option value="flat">Flat Amount Off (৳)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Value *</label>
+            <input id="disc-value" class="fi" type="number" min="0" placeholder="20"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Applies To</label>
+            <select id="disc-applies" class="fi" onchange="onDiscAppliesChange(this.value)">
+              <option value="all">All Products</option>
+              <option value="product">Specific Product</option>
+              <option value="category">Specific Category</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Min Order Amount (৳)</label>
+            <input id="disc-min-order" class="fi" type="number" min="0" placeholder="0"/>
+          </div>
+        </div>
+        <div class="fg" id="disc-product-wrap">
+          <label class="fl">Select Product</label>
+          <select id="disc-product-sel" class="fi"></select>
+        </div>
+        <div class="fg" id="disc-category-wrap">
+          <label class="fl">Select Category</label>
+          <select id="disc-cat-sel" class="fi"></select>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label class="fl">Expiry Date</label>
+            <input id="disc-expiry" class="fi" type="date"/>
+          </div>
+          <div class="fg" style="display:flex;align-items:center;gap:10px;padding-top:20px">
+            <label class="toggle">
+              <input type="checkbox" id="disc-active" checked/>
+              <div class="toggle-track"></div>
+              <div class="toggle-knob"></div>
+            </label>
+            <label class="fl" style="margin:0">Active</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveDiscount()" style="margin-top:8px">
+          Save Discount
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS -->
+  <div class="section" id="sec-orders">
+    <div class="section-header">
+      <span class="section-title">📋 Orders</span>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all"       onclick="setOrderFilter('all')">All</button>
+      <button class="filter-tab" data-filter="pending"          onclick="setOrderFilter('pending')">Pending</button>
+      <button class="filter-tab" data-filter="confirmed"        onclick="setOrderFilter('confirmed')">Confirmed</button>
+      <button class="filter-tab" data-filter="processing"       onclick="setOrderFilter('processing')">Processing</button>
+      <button class="filter-tab" data-filter="shipped"          onclick="setOrderFilter('shipped')">Shipped</button>
+      <button class="filter-tab" data-filter="delivered"        onclick="setOrderFilter('delivered')">Delivered</button>
+      <button class="filter-tab" data-filter="cancelled"        onclick="setOrderFilter('cancelled')">Cancelled</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Order #</th><th>Customer</th><th>Total</th>
+              <th>Status</th><th>Date</th><th>Update</th><th>WA</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:16px">
+              <div class="spin spin-dark"></div>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="section" id="sec-messages">
+    <div class="section-header">
+      <span class="section-title">📬 Messages</span>
+    </div>
+    <div class="table-wrap">
+      <div id="messages-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Bottom tab bar (mobile only) ────────────────────── -->
+<div id="bottom-tabs">
+  <div class="btab active" data-section="dashboard" onclick="showSection('dashboard')">
+    <div class="btab-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>
+    <span>Dash</span>
+  </div>
+  <div class="btab" data-section="products" onclick="showSection('products')">
+    <div class="btab-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+    </svg>
+    <span>Products</span>
+  </div>
+  <div class="btab" data-section="orders" onclick="showSection('orders')">
+    <div class="btab-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+    </svg>
+    <span>Orders</span>
+  </div>
+  <div class="btab" data-section="discounts" onclick="showSection('discounts')">
+    <div class="btab-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+    </svg>
+    <span>Discounts</span>
+  </div>
+  <div class="btab" data-section="messages" onclick="showSection('messages')">
+    <div class="btab-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+    <span>Messages</span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

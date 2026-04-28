@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="bn" class="lang-bn">
+<head>
+  <link rel="stylesheet" href="css/style.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#4F46E5" />
+  <title>পণ্য বিবরণ | Smart Supper Shop</title>
+  <meta name="description" content="Product details at Smart Supper Shop — স্মার্ট সুপার শপ" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Variables & Reset ─────────────────────────────── */
+    :root {
+      --primary:        #4F46E5;
+      --primary-dark:   #3730A3;
+      --accent:         #F43F5E;
+      --success:        #10B981;
+      --warning:        #F59E0B;
+      --bg:             #FAFAFA;
+      --surface:        #FFFFFF;
+      --surface2:       #F3F4F6;
+      --text-primary:   #111827;
+      --text-secondary: #6B7280;
+      --text-muted:     #9CA3AF;
+      --border:         #E5E7EB;
+      --shadow-sm:      0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md:      0 4px 16px rgba(0,0,0,0.09);
+      --shadow-lg:      0 8px 32px rgba(0,0,0,0.14);
+      --radius-sm:      10px;
+      --radius-md:      16px;
+      --radius-lg:      22px;
+      --font-body:      'Tiro Bangla', serif;
+      --bottom-nav-h:   64px;
+      --header-h:       56px;
+      --sticky-cta-h:   72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--bottom-nav-h) + var(--sticky-cta-h) + 8px);
+      -webkit-font-smoothing: antialiased;
+    }
+    .lang-en * { font-family: 'Times New Roman', Times, serif; }
+    .lang-bn * { font-family: 'Tiro Bangla', serif; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+    .tap { -webkit-tap-highlight-color: transparent; transition: transform 0.12s, opacity 0.12s; }
+    .tap:active { transform: scale(0.96); opacity: 0.82; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.4s ease both; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    #main-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      height: var(--header-h);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-primary);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .icon-btn:active { background: var(--surface2); }
+    .icon-btn svg { width: 20px; height: 20px; }
+    #header-product-name {
+      flex: 1;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .lang-toggle-btn {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      transition: transform 0.15s;
+      white-space: nowrap;
+      font-family: 'Tiro Bangla', 'Times New Roman', serif;
+      flex-shrink: 0;
+    }
+    .lang-toggle-btn:active { transform: scale(0.9); }
+    .cart-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.58rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+    }
+    .cart-badge[data-count="0"] { display: none; }
+
+    /* ── Gallery ─────────────────────────────────────────── */
+    #gallery-wrap {
+      margin-top: var(--header-h);
+      position: relative;
+      width: 100%;
+      background: var(--surface2);
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+    .gallery-track {
+      display: flex;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .gallery-slide {
+      flex-shrink: 0;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: blur(12px);
+      transition: filter 0.45s ease;
+    }
+    .gallery-slide img.loaded { filter: blur(0); }
+    .gallery-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 6px;
+      z-index: 4;
+    }
+    .gallery-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .gallery-dot.active {
+      background: #fff;
+      width: 18px;
+      border-radius: 4px;
+    }
+    .badge-sale {
+      position: absolute;
+      top: 14px; left: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      z-index: 5;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Sticky Info Bar (scroll-triggered) ──────────────── */
+    #sticky-info-bar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0; right: 0;
+      z-index: 800;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    #sticky-info-bar.visible { transform: translateY(0); }
+    #sticky-bar-name {
+      flex: 1;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #sticky-bar-price {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    #sticky-add-btn {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      flex-shrink: 0;
+      transition: background 0.18s, transform 0.12s;
+    }
+    #sticky-add-btn:active { transform: scale(0.94); background: var(--primary-dark); }
+
+    /* ── Product Details Card ────────────────────────────── */
+    #product-details {
+      background: var(--surface);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      margin-top: -20px;
+      position: relative;
+      z-index: 2;
+      padding: 22px 16px 0;
+    }
+    #product-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .price-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .price-sale {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .price-original {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+    .price-regular {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .off-badge {
+      background: rgba(244,63,94,0.1);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .you-save-text {
+      font-size: 0.8rem;
+      color: var(--success);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    /* Stock indicator */
+    .stock-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+    .stock-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stock-dot.in   { background: var(--success); }
+    .stock-dot.low  { background: var(--warning); }
+    .stock-dot.out  { background: var(--accent); }
+    .stock-label    { font-size: 0.82rem; font-weight: 600; }
+
+    /* Quantity stepper */
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+    .qty-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-right: 14px;
+    }
+    .qty-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--surface2);
+      color: var(--text-primary);
+      font-size: 1.3rem;
+      font-weight: 400;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, transform 0.12s;
+      flex-shrink: 0;
+    }
+    .qty-btn:active { transform: scale(0.88); background: var(--border); }
+    .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .qty-display {
+      width: 48px;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ── Discount Info Box ───────────────────────────────── */
+    #discount-box {
+      background: linear-gradient(135deg, rgba(79,70,229,0.07), rgba(244,63,94,0.07));
+      border: 1.5px solid rgba(79,70,229,0.2);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .discount-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .coupon-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .coupon-code {
+      flex: 1;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+    .copy-btn {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      transition: background 0.18s, transform 0.12s;
+      white-space: nowrap;
+    }
+    .copy-btn:active { transform: scale(0.93); }
+    .copy-btn.copied { background: var(--success); }
+
+    /* ── Accordions ─────────────────────────────────────── */
+    .accordion-wrap {
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .accordion-item { border-bottom: 1px solid var(--border); }
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .accordion-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .accordion-arrow {
+      width: 20px; height: 20px;
+      color: var(--text-muted);
+      transition: transform 0.28s ease;
+      flex-shrink: 0;
+    }
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.32s ease, padding 0.28s ease;
+    }
+    .accordion-item.open .accordion-body { max-height: 600px; }
+    .accordion-content {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      padding-bottom: 16px;
+    }
+
+    /* ── You May Also Like ───────────────────────────────── */
+    #also-like-section {
+      padding: 22px 0 0;
+      background: var(--bg);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .related-card {
+      flex-shrink: 0;
+      width: 148px;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .related-card:active { transform: scale(0.96); }
+    .related-img-wrap {
+      width: 100%; padding-top: 100%;
+      position: relative; overflow: hidden;
+      background: var(--surface2);
+    }
+    .related-img-wrap img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: blur(8px);
+      transition: filter 0.4s;
+    }
+    .related-img-wrap img.loaded { filter: blur(0); }
+    .related-info { padding: 9px 9px 11px; }
+    .related-name {
+      font-size: 0.79rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+    .related-price { font-size: 0.84rem; font-weight: 700; color: var(--primary); }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skel-gallery {
+      width: 100%; aspect-ratio: 1/1;
+      margin-top: var(--header-h);
+    }
+    .skel-line { height: 14px; margin: 10px 16px 6px; }
+    .skel-line.short { width: 50%; }
+    .skel-line.med   { width: 70%; }
+
+    /* ── Sticky Bottom CTA ───────────────────────────────── */
+    #bottom-cta {
+      position: fixed;
+      bottom: var(--bottom-nav-h);
+      left: 0; right: 0;
+      z-index: 850;
+      background: rgba(255,255,255,0.97);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px 10px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+    #add-to-cart-main {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+    }
+    #add-to-cart-main:active { transform: scale(0.97); box-shadow: none; }
+    #add-to-cart-main.added  { background: var(--success); box-shadow: 0 4px 14px rgba(16,185,129,0.35); }
+    #add-to-cart-main:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    #add-to-cart-main svg { width: 20px; height: 20px; }
+
+    /* Fly-to-cart animation */
+    @keyframes flyToCart {
+      0%   { opacity: 1; transform: scale(1) translate(0,0); }
+      100% { opacity: 0; transform: scale(0.2) translate(var(--fly-x), var(--fly-y)); }
+    }
+    .fly-dot {
+      position: fixed;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      pointer-events: none;
+      z-index: 9999;
+      animation: flyToCart 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+
+    /* ── Bottom Navigation ───────────────────────────────── */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--bottom-nav-h);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: stretch;
+      z-index: 800;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    }
+    .nav-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 0.6rem;
+      font-weight: 600;
+      position: relative;
+      padding: 6px 0;
+      font-family: var(--font-body);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-tab:active { background: var(--surface2); }
+    .nav-tab.active { color: var(--primary); }
+    .nav-tab svg { width: 22px; height: 22px; }
+    .nav-indicator {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 28px; height: 3px;
+      background: var(--primary);
+      border-radius: 0 0 4px 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-tab.active .nav-indicator { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────── -->
+<header id="main-header">
+  <div class="header-inner">
+    <button onclick="history.back()" class="icon-btn tap" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <span id="header-product-name">—</span>
+    <button class="lang-toggle-btn tap" onclick="window.i18n && window.i18n.toggleLanguage()" data-i18n="lang_toggle">EN</button>
+    <a href="cart.html" class="icon-btn tap" style="position:relative;" aria-label="Cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" id="header-cart-badge" data-count="0" style="display:none;">0</span>
+    </a>
+  </div>
+</header>
+
+<!-- ── Sticky Info Bar ─────────────────────────────────────── -->
+<div id="sticky-info-bar">
+  <span id="sticky-bar-name">—</span>
+  <span id="sticky-bar-price">৳0</span>
+  <button id="sticky-add-btn" class="tap" data-i18n="add_to_cart">কার্টে যোগ করুন</button>
+</div>
+
+<!-- ── Gallery (skeleton while loading) ───────────────────── -->
+<div id="gallery-wrap">
+  <div class="skeleton skel-gallery" id="gallery-skeleton"></div>
+  <div class="gallery-track" id="gallery-track" style="display:none;"></div>
+  <div class="gallery-dots" id="gallery-dots"></div>
+</div>
+
+<!-- ── Product Details ─────────────────────────────────────── -->
+<div id="product-details" style="display:none;">
+
+  <!-- Name & price -->
+  <h1 id="product-name" class="fade-up">—</h1>
+
+  <div class="price-block fade-up" id="price-block">
+    <span class="price-regular" id="price-display">৳0</span>
+  </div>
+
+  <div class="you-save-text" id="you-save-text" style="display:none;"></div>
+
+  <!-- Stock -->
+  <div class="stock-row fade-up" id="stock-row">
+    <div class="stock-dot in" id="stock-dot"></div>
+    <span class="stock-label" id="stock-label" data-i18n="in_stock">স্টকে আছে</span>
+  </div>
+
+  <!-- Quantity stepper -->
+  <div class="quantity-row fade-up" id="qty-row">
+    <span class="qty-label" data-i18n="quantity">পরিমাণ</span>
+    <button class="qty-btn tap" id="qty-minus" onclick="changeQty(-1)">−</button>
+    <span class="qty-display" id="qty-display">1</span>
+    <button class="qty-btn tap" id="qty-plus"  onclick="changeQty(1)">+</button>
+  </div>
+
+  <!-- Discount info box -->
+  <div id="discount-box">
+    <div class="discount-title" data-i18n="special_offer">🎉 বিশেষ অফার প্রযোজ্য!</div>
+    <div class="coupon-row" id="coupon-row" style="display:none;">
+      <div class="coupon-code" id="coupon-code-display"></div>
+      <button class="copy-btn tap" id="copy-btn" onclick="copyCode()" data-i18n="copy_code">কোড কপি করুন</button>
+    </div>
+  </div>
+
+  <!-- Accordions -->
+  <div class="accordion-wrap fade-up">
+
+    <!-- Description -->
+    <div class="accordion-item" id="acc-desc">
+      <div class="accordion-header tap" onclick="toggleAccordion('acc-desc')">
+        <span class="accordion-title" data-i18n="description">বিবরণ</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-content" id="desc-content">—</div>
+      </div>
+    </div>
+
+    <!-- Delivery Info -->
+    <div class="accordion-item" id="acc-delivery">
+      <div class="accordion-header tap" onclick="toggleAccordion('acc-delivery')">
+        <span class="accordion-title" data-i18n="delivery_info">ডেলিভারি তথ্য</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-content" id="delivery-content" data-i18n="delivery_info_text">—</div>
+      </div>
+    </div>
+
+    <!-- Return Policy -->
+    <div class="accordion-item" id="acc-return">
+      <div class="accordion-header tap" onclick="toggleAccordion('acc-return')">
+        <span class="accordion-title" data-i18n="return_policy">ফেরত নীতি</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-content" id="return-content" data-i18n="return_policy_text">—</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Skeleton detail lines -->
+<div id="details-skeleton" style="background:var(--surface);padding:20px 0 10px;">
+  <div class="skeleton skel-line med"></div>
+  <div class="skeleton skel-line short"></div>
+  <div class="skeleton skel-line" style="margin-top:16px;"></div>
+  <div class="skeleton skel-line med"></div>
+  <div class="skeleton skel-line short"></div>
+</div>
+
+<!-- ── You May Also Like ────────────────────────────────────── -->
+<section id="also-like-section" style="display:none;">
+  <div class="section-header">
+    <span class="section-title" data-i18n="you_may_also_like">আপনার পছন্দ হতে পারে</span>
+  </div>
+  <div class="carousel-track" id="also-like-track"></div>
+</section>
+
+<!-- ── Sticky Bottom CTA ────────────────────────────────────── -->
+<div id="bottom-cta">
+  <button id="add-to-cart-main" class="tap" onclick="handleMainAddToCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+      <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+    </svg>
+    <span id="add-to-cart-label" data-i18n="add_to_cart">কার্টে যোগ করুন</span>
+  </button>
+</div>
+
+<!-- ── Bottom Navigation ────────────────────────────────────── -->
+<nav id="bottom-nav">
+  <a href="index.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav_home">হোম</span>
+  </a>
+  <a href="shop.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="nav_shop">শপ</span>
+  </a>
+  <a href="cart.html" class="nav-tab tap" style="position:relative;">
+    <div class="nav-indicator"></div>
+    <div style="position:relative;display:inline-block;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" data-count="0" style="display:none;">0</span>
+    </div>
+    <span data-i18n="nav_cart">কার্ট</span>
+  </a>
+  <a href="contact.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 10.81 19.79 19.79 0 01.06 2.22 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+    </svg>
+    <span data-i18n="nav_contact">যোগাযোগ</span>
+  </a>
+</nav>
+
+<!-- Scripts -->
+<script src="js/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+/* ============================================================
+   PRODUCT PAGE LOGIC
+============================================================ */
+
+// ── State ──────────────────────────────────────────────────
+let _product   = null;
+let _discount  = null;
+let _qty       = 1;
+let _galleryIdx = 0;
+let _galleryImgs = [];
+let _galleryStartX = 0;
+
+// ── Helpers ────────────────────────────────────────────────
+const t  = (key, vars) => window.i18n  ? window.i18n.t(key, vars)      : key;
+const fp = (amt)       => window.utils ? window.utils.formatPrice(amt)  : '৳' + amt;
+const gl = ()          => window.utils ? window.utils.getLang()          : 'bn';
+const haptic = ()      => window.utils && window.utils.triggerHaptic();
+
+function getProductName(p) {
+  return window.utils ? window.utils.getProductName(p) : (p.name_bn || p.name_en);
+}
+function getProductDesc(p) {
+  return window.utils ? window.utils.getProductDescription(p) : (p.description_bn || p.description_en || '');
+}
+
+// ── Quantity stepper ────────────────────────────────────────
+function changeQty(delta) {
+  haptic();
+  const max = (_product && _product.stock) ? _product.stock : 99;
+  _qty = Math.max(1, Math.min(_qty + delta, max));
+  document.getElementById('qty-display').textContent = _qty;
+  document.getElementById('qty-minus').disabled = (_qty <= 1);
+  document.getElementById('qty-plus').disabled  = (_qty >= max);
+}
+
+// ── Gallery ─────────────────────────────────────────────────
+function buildGallery(images) {
+  const track    = document.getElementById('gallery-track');
+  const dotsEl   = document.getElementById('gallery-dots');
+  const skeleton = document.getElementById('gallery-skeleton');
+
+  _galleryImgs = images.filter(Boolean);
+  if (_galleryImgs.length === 0) _galleryImgs = ['assets/placeholder.jpg'];
+
+  track.innerHTML = _galleryImgs.map((src, i) => `
+    <div class="gallery-slide">
+      <img data-src="${src}"
+           src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+           alt="Product image ${i+1}" loading="${i===0?'eager':'lazy'}" />
+    </div>`).join('');
+
+  dotsEl.innerHTML = _galleryImgs.length > 1
+    ? _galleryImgs.map((_, i) =>
+        `<div class="gallery-dot${i===0?' active':''}" onclick="gotoSlide(${i})"></div>`
+      ).join('')
+    : '';
+
+  skeleton.style.display = 'none';
+  track.style.display    = 'flex';
+
+  // Load first image immediately
+  const firstImg = track.querySelector('img');
+  if (firstImg) {
+    firstImg.src = _galleryImgs[0];
+    firstImg.onload = () => firstImg.classList.add('loaded');
+  }
+
+  // Lazy load rest
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const img = e.target;
+        img.src = img.dataset.src;
+        img.onload = () => img.classList.add('loaded');
+        io.unobserve(img);
+      });
+    });
+    track.querySelectorAll('img:not(:first-child)').forEach(img => io.observe(img));
+  }
+
+  // Touch swipe on gallery
+  const wrap = document.getElementById('gallery-wrap');
+  wrap.addEventListener('touchstart', e => { _galleryStartX = e.touches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _galleryStartX;
+    if (Math.abs(dx) > 50) {
+      gotoSlide(dx < 0
+        ? Math.min(_galleryIdx + 1, _galleryImgs.length - 1)
+        : Math.max(_galleryIdx - 1, 0));
+    }
+  }, { passive: true });
+}
+
+function gotoSlide(idx) {
+  _galleryIdx = idx;
+  const track = document.getElementById('gallery-track');
+  track.style.transform = `translateX(-${idx * 100}%)`;
+  document.querySelectorAll('.gallery-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === idx));
+}
+
+// ── Calculate discount ──────────────────────────────────────
+function calcDiscount(product, discounts) {
+  if (!discounts || !discounts.length) return null;
+  const now = new Date();
+  for (const d of discounts) {
+    if (!d.is_active) continue;
+    if (d.expires_at && new Date(d.expires_at) < now) continue;
+    const match = d.applies_to === 'all' ||
+      (d.applies_to === 'product'  && d.product_id  === product.id) ||
+      (d.applies_to === 'category' && d.category_id === product.category_id);
+    if (!match) continue;
+    let dp = d.type === 'percent'
+      ? product.price - (product.price * d.value / 100)
+      : product.price - d.value;
+    dp = Math.max(0, Math.round(dp));
+    const saving = Math.round(product.price - dp);
+    const pct    = Math.round((saving / product.price) * 100);
+    return { discounted_price: dp, saving, pct, code: d.code, discount: d };
+  }
+  return null;
+}
+
+// ── Render product details ──────────────────────────────────
+function renderProduct() {
+  if (!_product) return;
+  const p = _product;
+  const d = _discount;
+  const lang = gl();
+
+  // Header name
+  const name = getProductName(p);
+  document.getElementById('header-product-name').textContent = name;
+  document.title = name + ' | Smart Supper Shop';
+
+  // Product name heading
+  document.getElementById('product-name').textContent = name;
+
+  // Price block
+  const priceBlock = document.getElementById('price-block');
+  if (d) {
+    priceBlock.innerHTML = `
+      <span class="price-sale">${fp(d.discounted_price)}</span>
+      <span class="price-original">${fp(p.price)}</span>
+      <span class="off-badge">${d.pct}% OFF</span>`;
+    const youSave = document.getElementById('you-save-text');
+    youSave.textContent = t('you_save', { n: d.saving });
+    youSave.style.display = 'block';
+  } else {
+    priceBlock.innerHTML = `<span class="price-regular">${fp(p.price)}</span>`;
+    document.getElementById('you-save-text').style.display = 'none';
+  }
+
+  // Sticky bar
+  document.getElementById('sticky-bar-name').textContent  = name;
+  document.getElementById('sticky-bar-price').textContent = d ? fp(d.discounted_price) : fp(p.price);
+
+  // Stock indicator
+  const dot   = document.getElementById('stock-dot');
+  const label = document.getElementById('stock-label');
+  const addBtn = document.getElementById('add-to-cart-main');
+  const stickyBtn = document.getElementById('sticky-add-btn');
+
+  if (p.stock === null || p.stock === undefined || p.stock > 5) {
+    dot.className = 'stock-dot in';
+    label.setAttribute('data-i18n', 'in_stock');
+    label.textContent = t('in_stock');
+  } else if (p.stock > 0) {
+    dot.className = 'stock-dot low';
+    label.setAttribute('data-i18n', 'low_stock');
+    label.textContent = t('low_stock', { n: p.stock });
+  } else {
+    dot.className = 'stock-dot out';
+    label.setAttribute('data-i18n', 'out_of_stock');
+    label.textContent = t('out_of_stock');
+    addBtn.disabled    = true;
+    stickyBtn.disabled = true;
+  }
+
+  // Quantity stepper max
+  if (p.stock && p.stock <= 1) document.getElementById('qty-plus').disabled = true;
+
+  // Description
+  document.getElementById('desc-content').textContent =
+    getProductDesc(p) || (lang === 'bn' ? 'বিবরণ পাওয়া যায়নি।' : 'No description available.');
+
+  // Delivery & return (pulled from i18n)
+  document.getElementById('delivery-content').textContent = t('delivery_info_text');
+  document.getElementById('return-content').textContent   = t('return_policy_text');
+
+  // Discount box
+  if (d) {
+    const box = document.getElementById('discount-box');
+    box.style.display = 'block';
+    if (d.code) {
+      document.getElementById('coupon-row').style.display = 'flex';
+      document.getElementById('coupon-code-display').textContent = d.code;
+    }
+  }
+
+  // SALE badge on gallery
+  if (d) {
+    const badge = document.createElement('div');
+    badge.className = 'badge-sale';
+    badge.setAttribute('data-i18n', 'sale_badge');
+    badge.textContent = t('sale_badge');
+    document.getElementById('gallery-wrap').appendChild(badge);
+  }
+
+  // Show details, hide skeleton
+  document.getElementById('product-details').style.display  = 'block';
+  document.getElementById('details-skeleton').style.display = 'none';
+}
+
+// ── Sticky info bar on scroll ───────────────────────────────
+function setupStickyBar() {
+  const bar      = document.getElementById('sticky-info-bar');
+  const details  = document.getElementById('product-details');
+  const observer = new IntersectionObserver(entries => {
+    bar.classList.toggle('visible', !entries[0].isIntersecting);
+  }, { threshold: 0, rootMargin: '-60px 0px 0px 0px' });
+  if (details) observer.observe(details);
+}
+
+// ── Accordion ───────────────────────────────────────────────
+function toggleAccordion(id) {
+  const item = document.getElementById(id);
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.accordion-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── Copy coupon code ────────────────────────────────────────
+function copyCode() {
+  const code = document.getElementById('coupon-code-display').textContent;
+  const btn  = document.getElementById('copy-btn');
+  navigator.clipboard.writeText(code).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = code; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  btn.classList.add('copied');
+  btn.setAttribute('data-i18n', 'code_copied');
+  btn.textContent = t('code_copied');
+  if (window.utils) window.utils.showToast(t('code_copied'), 'success');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.setAttribute('data-i18n', 'copy_code');
+    btn.textContent = t('copy_code');
+  }, 2000);
+}
+
+// ── Fly-to-cart animation ───────────────────────────────────
+function flyToCart(sourceEl) {
+  const cartIcon = document.getElementById('header-cart-badge') || document.querySelector('.cart-badge');
+  if (!cartIcon || !sourceEl) return;
+
+  const from = sourceEl.getBoundingClientRect();
+  const to   = cartIcon.getBoundingClientRect();
+
+  const dot = document.createElement('div');
+  dot.className = 'fly-dot';
+  dot.style.cssText = `
+    left: ${from.left + from.width / 2 - 8}px;
+    top:  ${from.top  + from.height / 2 - 8}px;
+    --fly-x: ${to.left - from.left - from.width / 2 + to.width / 2}px;
+    --fly-y: ${to.top  - from.top  - from.height / 2 + to.height / 2}px;
+  `;
+  document.body.appendChild(dot);
+  setTimeout(() => dot.remove(), 600);
+}
+
+// ── Add to cart (main CTA) ──────────────────────────────────
+function handleMainAddToCart() {
+  if (!_product) return;
+  haptic();
+
+  const btn = document.getElementById('add-to-cart-main');
+  const lbl = document.getElementById('add-to-cart-label');
+
+  // Add qty times
+  for (let i = 0; i < _qty; i++) {
+    if (window.cart) window.cart.addToCart(_product);
+  }
+
+  // Fly animation
+  flyToCart(btn);
+
+  // Button feedback
+  const orig = lbl.textContent;
+  btn.classList.add('added');
+  lbl.textContent = '✓ ' + t('added_to_cart');
+  setTimeout(() => {
+    btn.classList.remove('added');
+    lbl.setAttribute('data-i18n', 'add_to_cart');
+    lbl.textContent = t('add_to_cart');
+  }, 2000);
+}
+
+// Sticky add button delegates to same handler
+document.getElementById('sticky-add-btn').addEventListener('click', handleMainAddToCart);
+
+// ── Save to recently viewed ─────────────────────────────────
+function saveRecentlyViewed(id) {
+  let ids = [];
+  try { ids = JSON.parse(localStorage.getItem('recently_viewed')) || []; } catch(e) {}
+  ids = ids.filter(x => x !== id);
+  ids.unshift(id);
+  ids = ids.slice(0, 10);
+  localStorage.setItem('recently_viewed', JSON.stringify(ids));
+}
+
+// ── Load also-like products ─────────────────────────────────
+async function loadAlsoLike(categoryId, currentId) {
+  if (!categoryId) return;
+  try {
+    const { data, error } = await window.supabase
+      .from('products')
+      .select('id, name_en, name_bn, price, image_url')
+      .eq('is_active', true)
+      .eq('category_id', categoryId)
+      .neq('id', currentId)
+      .limit(6);
+
+    if (error || !data || data.length === 0) return;
+
+    const track   = document.getElementById('also-like-track');
+    const section = document.getElementById('also-like-section');
+
+    track.innerHTML = data.map(p => `
+      <div class="related-card tap" onclick="window.location.href='product.html?id=${p.id}'">
+        <div class="related-img-wrap">
+          <img data-src="${p.image_url || 'assets/placeholder.jpg'}"
+               src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+               alt="${window.utils ? window.utils.getProductName(p) : (p.name_bn||p.name_en)}"
+               loading="lazy" />
+        </div>
+        <div class="related-info">
+          <div class="related-name" data-product-id="${p.id}">
+            ${window.utils ? window.utils.getProductName(p) : (p.name_bn || p.name_en)}
+          </div>
+          <div class="related-price">${fp(p.price)}</div>
+        </div>
+      </div>`).join('');
+
+    section.style.display = 'block';
+
+    // Lazy images
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const img = e.target;
+          img.src = img.dataset.src;
+          img.onload = () => img.classList.add('loaded');
+          io.unobserve(img);
+        });
+      }, { rootMargin: '100px' });
+      track.querySelectorAll('img[data-src]').forEach(img => io.observe(img));
+    }
+
+    // Store for language re-render
+    window._alsoLikeProducts = data;
+  } catch(e) { console.error('loadAlsoLike:', e); }
+}
+
+// ── Load discounts ──────────────────────────────────────────
+async function loadDiscounts() {
+  try {
+    const { data } = await window.supabase.from('discounts').select('*').eq('is_active', true);
+    return data || [];
+  } catch(e) { return []; }
+}
+
+// ── Main init ───────────────────────────────────────────────
+async function init() {
+  // Language
+  const lang = localStorage.getItem('lang') || 'bn';
+  if (window.i18n) window.i18n.setLanguage(lang);
+  if (window.cart) window.cart.renderCartBadge();
+
+  // Product ID from URL
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+  if (!productId) {
+    document.getElementById('product-name').textContent =
+      lang === 'bn' ? 'পণ্য পাওয়া যায়নি' : 'Product not found';
+    return;
+  }
+
+  // Wait for Supabase
+  if (!window.supabase) {
+    await new Promise(r => window.addEventListener('supabaseReady', r, { once: true }));
+  }
+
+  try {
+    // Fetch product + discounts in parallel
+    const [prodResult, discounts] = await Promise.all([
+      window.supabase.from('products').select('*').eq('id', productId).single(),
+      loadDiscounts()
+    ]);
+
+    if (prodResult.error || !prodResult.data) {
+      document.getElementById('product-name').textContent =
+        lang === 'bn' ? 'পণ্য পাওয়া যায়নি' : 'Product not found';
+      document.getElementById('details-skeleton').style.display = 'none';
+      return;
+    }
+
+    _product  = prodResult.data;
+    _discount = calcDiscount(_product, discounts);
+
+    // Gallery images
+    const images = [];
+    if (_product.image_url) images.push(_product.image_url);
+    if (_product.images && Array.isArray(_product.images)) images.push(..._product.images);
+    buildGallery(images);
+
+    // Render details
+    renderProduct();
+    setupStickyBar();
+
+    // Save to recently viewed
+    saveRecentlyViewed(_product.id);
+
+    // Load related products
+    loadAlsoLike(_product.category_id, _product.id);
+
+  } catch(e) {
+    console.error('init error:', e);
+  }
+}
+
+// ── languageChanged → re-render ─────────────────────────────
+window.addEventListener('languageChanged', function() {
+  if (!_product) return;
+  const p = _product;
+  const d = _discount;
+
+  // Name
+  const name = getProductName(p);
+  document.getElementById('header-product-name').textContent = name;
+  document.getElementById('product-name').textContent        = name;
+  document.getElementById('sticky-bar-name').textContent     = name;
+
+  // You save
+  if (d) {
+    const youSave = document.getElementById('you-save-text');
+    youSave.textContent = t('you_save', { n: d.saving });
+  }
+
+  // Stock label
+  const label = document.getElementById('stock-label');
+  const key   = label.getAttribute('data-i18n');
+  if (key === 'low_stock') {
+    label.textContent = t('low_stock', { n: _product.stock });
+  } else {
+    label.textContent = t(key);
+  }
+
+  // Description
+  document.getElementById('desc-content').textContent =
+    getProductDesc(p) || (gl() === 'bn' ? 'বিবরণ পাওয়া যায়নি।' : 'No description available.');
+
+  // Delivery & return
+  document.getElementById('delivery-content').textContent = t('delivery_info_text');
+  document.getElementById('return-content').textContent   = t('return_policy_text');
+
+  // Add to cart button
+  const lbl = document.getElementById('add-to-cart-label');
+  if (!lbl.textContent.startsWith('✓')) {
+    lbl.textContent = t('add_to_cart');
+  }
+  document.getElementById('sticky-add-btn').textContent = t('add_to_cart');
+
+  // Copy btn
+  const copyBtn = document.getElementById('copy-btn');
+  if (copyBtn && !copyBtn.classList.contains('copied')) {
+    copyBtn.textContent = t('copy_code');
+  }
+
+  // Accordion titles (handled by i18n.js data-i18n scan)
+  // Also-like product names
+  if (window._alsoLikeProducts) {
+    document.querySelectorAll('.related-name[data-product-id]').forEach(el => {
+      const pid = el.getAttribute('data-product-id');
+      const rp  = window._alsoLikeProducts.find(x => x.id === pid);
+      if (rp && window.utils) el.textContent = window.utils.getProductName(rp);
+    });
+  }
+
+  // Quantity label
+  document.getElementById('qty-row').querySelector('[data-i18n="quantity"]').textContent = t('quantity');
+});
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

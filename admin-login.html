@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#4F46E5"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Admin Login | Smart Supper Shop</title>
+<style>
+:root{
+  --primary:#4F46E5;--primary-dark:#3730A3;--primary-light:#EEF2FF;
+  --accent:#F43F5E;--success:#10B981;
+  --text:#111827;--text2:#6B7280;--muted:#9CA3AF;
+  --border:#E5E7EB;--surface:#fff;--surface2:#F9FAFB;
+  --font:'Times New Roman',Times,serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);
+  background:linear-gradient(135deg,#312e81 0%,#4F46E5 40%,#7C3AED 75%,#6d28d9 100%);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Decorative background blobs */
+body::before{
+  content:'';position:fixed;top:-120px;right:-120px;
+  width:380px;height:380px;border-radius:50%;
+  background:rgba(255,255,255,.05);pointer-events:none;
+}
+body::after{
+  content:'';position:fixed;bottom:-100px;left:-80px;
+  width:300px;height:300px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none;
+}
+
+/* Card */
+.card{
+  background:var(--surface);
+  border-radius:24px;
+  padding:36px 28px 32px;
+  width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25),0 4px 16px rgba(0,0,0,.15);
+  position:relative;z-index:1;
+  animation:popIn .45s cubic-bezier(.34,1.3,.64,1) both;
+}
+@keyframes popIn{
+  from{opacity:0;transform:scale(.94) translateY(16px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+/* Store branding */
+.brand{text-align:center;margin-bottom:28px}
+.brand-icon{
+  width:64px;height:64px;border-radius:18px;
+  background:linear-gradient(135deg,#4F46E5,#7C3AED);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+  box-shadow:0 8px 20px rgba(79,70,229,.4);
+}
+.brand-icon svg{width:32px;height:32px;color:#fff}
+.brand-name{font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.brand-sub{font-size:.82rem;color:var(--text2);font-weight:500}
+.admin-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--primary-light);color:var(--primary);
+  font-size:.72rem;font-weight:700;padding:4px 10px;
+  border-radius:999px;margin-top:8px;letter-spacing:.3px;
+}
+
+/* Form */
+.form-title{
+  font-size:.78rem;font-weight:700;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:18px;text-align:center;
+}
+
+.field{margin-bottom:14px;position:relative}
+.field label{
+  display:block;font-size:.78rem;font-weight:600;
+  color:var(--text2);margin-bottom:6px;
+}
+.field input{
+  width:100%;height:48px;
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:0 44px 0 14px;
+  font-size:.94rem;font-family:var(--font);
+  color:var(--text);background:var(--surface2);
+  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
+  -webkit-appearance:none;
+}
+.field input:focus{
+  border-color:var(--primary);
+  background:var(--surface);
+  box-shadow:0 0 0 3px rgba(79,70,229,.12);
+}
+.field input.err{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(244,63,94,.1);
+}
+
+/* Eye toggle */
+.eye-btn{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);cursor:pointer;background:none;border:none;
+  transition:color .2s,background .15s;margin-top:11px;
+}
+.eye-btn:hover{color:var(--text2);background:var(--border)}
+.eye-btn svg{width:17px;height:17px;pointer-events:none}
+
+/* Sign in button */
+#sign-in-btn{
+  width:100%;height:50px;
+  background:var(--primary);color:#fff;
+  border:none;border-radius:12px;
+  font-size:.97rem;font-weight:700;
+  font-family:var(--font);
+  cursor:pointer;margin-top:6px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 14px rgba(79,70,229,.35);
+  transition:background .18s,transform .12s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+#sign-in-btn:hover{background:#4338ca}
+#sign-in-btn:active{transform:scale(.97);box-shadow:none}
+#sign-in-btn:disabled{
+  background:var(--border);color:var(--muted);
+  box-shadow:none;cursor:not-allowed;
+}
+
+/* Spinner */
+.spin{
+  width:19px;height:19px;
+  border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;
+  animation:sp .7s linear infinite;flex-shrink:0;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Error box */
+#error-box{
+  margin-top:12px;padding:11px 14px;
+  background:#FEF2F2;border:1px solid #FECACA;
+  border-radius:10px;
+  display:none;
+  align-items:flex-start;gap:8px;
+}
+#error-box.show{display:flex}
+#error-box svg{width:16px;height:16px;color:#EF4444;flex-shrink:0;margin-top:1px}
+#error-msg{font-size:.8rem;color:#B91C1C;font-weight:500;line-height:1.45}
+
+/* Footer note */
+.card-footer{
+  text-align:center;margin-top:22px;
+  font-size:.72rem;color:var(--muted);
+}
+.card-footer a{color:var(--primary);font-weight:600}
+
+/* Attempts warning */
+#lockout-box{
+  margin-top:12px;padding:11px 14px;
+  background:#FFFBEB;border:1px solid #FDE68A;
+  border-radius:10px;display:none;
+  align-items:center;gap:8px;
+}
+#lockout-box.show{display:flex}
+#lockout-box svg{width:16px;height:16px;color:#D97706;flex-shrink:0}
+#lockout-msg{font-size:.8rem;color:#92400E;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Brand -->
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+    </div>
+    <div class="brand-name">Smart Supper Shop</div>
+    <div class="brand-sub">স্মার্ট সুপার শপ</div>
+    <div class="admin-badge">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>
+      Admin Panel
+    </div>
+  </div>
+
+  <!-- Form -->
+  <p class="form-title">Sign in to continue</p>
+
+  <div class="field">
+    <label for="email">Email Address</label>
+    <input id="email" type="email" autocomplete="email"
+           inputmode="email" placeholder="admin@example.com"
+           onkeydown="if(event.key==='Enter')document.getElementById('password').focus()"/>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password"
+           placeholder="••••••••"
+           onkeydown="if(event.key==='Enter')signIn()"/>
+    <button class="eye-btn" id="eye-btn" onclick="toggleEye()" type="button"
+            aria-label="Show/hide password">
+      <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Sign in button -->
+  <button id="sign-in-btn" onclick="signIn()">
+    <span id="btn-label">Sign In</span>
+  </button>
+
+  <!-- Error -->
+  <div id="error-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="error-msg"></span>
+  </div>
+
+  <!-- Lockout warning -->
+  <div id="lockout-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0
+        001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span id="lockout-msg">Too many attempts. Please wait a few minutes.</span>
+  </div>
+
+  <div class="card-footer">
+    <a href="index.html">← Back to Store</a>
+  </div>
+
+</div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var _attempts  = 0;
+var _maxTries  = 5;
+var _locked    = false;
+var _sbClient  = null;
+
+/* Init Supabase client */
+function getClient() {
+  if (_sbClient) return _sbClient;
+  _sbClient = supabase.createClient(
+    'https://pqybuwpeillfpvzihzkv.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxeWJ1d3BlaWxsZnB2emloemt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwOTEyMzcsImV4cCI6MjA5MjY2NzIzN30.kIqc0qq6voKqZZEEIq6JIqh1XChL0mZ4ZYBwbl2INiU'
+  );
+  return _sbClient;
+}
+
+/* Show/hide password */
+function toggleEye() {
+  var pw   = document.getElementById('password');
+  var icon = document.getElementById('eye-icon');
+  var show = pw.type === 'password';
+  pw.type  = show ? 'text' : 'password';
+  icon.innerHTML = show
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>' +
+      '<path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>' +
+      '<line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>' +
+      '<circle cx="12" cy="12" r="3"/>';
+}
+
+/* Show error */
+function showError(msg) {
+  var box = document.getElementById('error-box');
+  var txt = document.getElementById('error-msg');
+  txt.textContent = msg;
+  box.classList.add('show');
+}
+function hideError() {
+  document.getElementById('error-box').classList.remove('show');
+}
+
+/* Show lockout */
+function showLockout() {
+  document.getElementById('lockout-box').classList.add('show');
+  document.getElementById('error-box').classList.remove('show');
+}
+
+/* Set button loading state */
+function setLoading(loading) {
+  var btn = document.getElementById('sign-in-btn');
+  var lbl = document.getElementById('btn-label');
+  if (loading) {
+    btn.disabled  = true;
+    btn.innerHTML = '<div class="spin"></div><span>Signing in...</span>';
+  } else {
+    btn.disabled  = false;
+    btn.innerHTML = '<span id="btn-label">Sign In</span>';
+  }
+}
+
+/* Sign in */
+async function signIn() {
+  if (_locked) { showLockout(); return; }
+
+  var email = document.getElementById('email').value.trim();
+  var pw    = document.getElementById('password').value;
+
+  hideError();
+
+  if (!email || !pw) {
+    showError('Please enter your email and password.');
+    if (!email) document.getElementById('email').classList.add('err');
+    if (!pw)    document.getElementById('password').classList.add('err');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    var client = getClient();
+    var res    = await client.auth.signInWithPassword({ email: email, password: pw });
+
+    if (res.error) {
+      _attempts++;
+      setLoading(false);
+
+      if (_attempts >= _maxTries) {
+        _locked = true;
+        showLockout();
+        document.getElementById('sign-in-btn').disabled = true;
+        return;
+      }
+
+      var remaining = _maxTries - _attempts;
+      var msg = 'Invalid email or password. Please try again.';
+      if (remaining <= 2) {
+        msg += ' (' + remaining + ' attempt' + (remaining === 1 ? '' : 's') + ' remaining)';
+      }
+      showError(msg);
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      return;
+    }
+
+    /* Success */
+    window.location.replace('admin.html');
+
+  } catch (err) {
+    console.error('signIn error:', err);
+    setLoading(false);
+    showError('Something went wrong. Please check your connection and try again.');
+  }
+}
+
+/* Clear error on input */
+['email','password'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    this.classList.remove('err');
+    hideError();
+  });
+});
+
+/* On page load — check existing session */
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    var client = getClient();
+    var res    = await client.auth.getSession();
+    if (res.data && res.data.session) {
+      window.location.replace('admin.html');
+    }
+  } catch (e) {
+    /* no session — stay on page */
+  }
+  /* Focus email field */
+  document.getElementById('email').focus();
+});
+</script>
+</body>
+</html>

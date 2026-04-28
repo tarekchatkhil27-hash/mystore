@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="bn" class="lang-bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#10B981"/>
+<title>অর্ডার সম্পন্ন | Smart Supper Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap"
+      rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js">
+</script>
+<style>
+body { padding-bottom: 88px; }
+
+#main-header {
+  position: sticky; top: 0; z-index: 900; height: 56px;
+  background: rgba(255,255,255,.93); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+.hdr-inner {
+  display: flex; align-items: center; padding: 0 14px;
+  height: 100%; max-width: 480px; margin: 0 auto;
+}
+.hdr-logo { flex: 1; font-size: 1rem; font-weight: 700; color: var(--primary); }
+
+/* Checkmark */
+.check-wrap {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(16,185,129,.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn {
+  0%   { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.check-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: #10B981;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(16,185,129,.35);
+}
+.check-icon {
+  width: 38px; height: 38px;
+  stroke: #fff; stroke-width: 3;
+  stroke-linecap: round; stroke-linejoin: round; fill: none;
+  stroke-dasharray: 60; stroke-dashoffset: 60;
+  animation: drawCheck .55s ease .3s forwards;
+}
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+#hero {
+  padding: 40px 20px 24px; text-align: center;
+  max-width: 480px; margin: 0 auto;
+}
+.success-title {
+  font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;
+  animation: fu .4s ease .5s both;
+}
+.success-sub {
+  font-size: .88rem; color: var(--text-secondary); line-height: 1.6;
+  animation: fu .4s ease .6s both;
+}
+@keyframes fu {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Order number */
+#order-card {
+  max-width: 480px; margin: 0 auto 14px; padding: 0 14px;
+  animation: fu .4s ease .65s both;
+}
+.num-box {
+  background: #fff; border-radius: 22px; padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07); text-align: center;
+  border: 1.5px solid rgba(16,185,129,.2);
+}
+.num-lbl {
+  font-size: .78rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+}
+.num-val {
+  font-size: 1.3rem; font-weight: 700; color: #10B981;
+  letter-spacing: 1px; font-family: 'Courier New', monospace;
+}
+
+/* Summary */
+#summary-card {
+  max-width: 480px; margin: 0 auto 14px; padding: 0 14px;
+  animation: fu .4s ease .7s both; display: none;
+}
+.sum-box { background: #fff; border-radius: 22px; padding: 18px 16px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.sum-title {
+  font-size: .82rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.sum-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--surface2); }
+.sum-item:last-child { border-bottom: none; }
+.si-img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: var(--surface2); }
+.si-info { flex: 1; min-width: 0; }
+.si-name { font-size: .82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-sub  { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+.si-price { font-size: .88rem; font-weight: 700; color: var(--primary); flex-shrink: 0; }
+.total-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.total-lbl { font-size: .9rem; font-weight: 700; }
+.total-val { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+
+/* CTA */
+#cta-section {
+  max-width: 480px; margin: 0 auto;
+  padding: 6px 14px 20px;
+  display: flex; flex-direction: column; gap: 12px;
+  animation: fu .4s ease .75s both;
+}
+.cta-btn {
+  width: 100%; height: 52px; border-radius: 16px;
+  font-size: .95rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: 'Tiro Bangla', serif;
+  transition: transform .12s, box-shadow .15s;
+  border: none; cursor: pointer; text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cta-btn:active { transform: scale(.97); box-shadow: none; }
+.cta-wa { background: #25D366; color: #fff; box-shadow: 0 4px 14px rgba(37,211,102,.3); }
+.cta-shop { background: #fff; color: var(--primary); border: 2px solid var(--primary); }
+
+/* Bottom nav */
+#bnav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: stretch; z-index: 800;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.06);
+}
+.ntab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  color: var(--text-muted); font-size: .6rem; font-weight: 600;
+  font-family: 'Tiro Bangla', serif;
+  text-decoration: none; -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.ntab:active { background: var(--surface2); }
+.ntab svg { width: 22px; height: 22px; }
+.cbadge {
+  position: absolute; top: -5px; right: -5px;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: 999px; background: var(--accent);
+  color: #fff; font-size: .6rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.cbadge[data-count="0"] { display: none; }
+
+#confetti-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<header id="main-header">
+  <div class="hdr-inner">
+    <a href="index.html" class="hdr-logo" data-i18n="store_name">
+      স্মার্ট সুপার শপ
+    </a>
+    <button class="lang-toggle-btn tap"
+            onclick="window.i18n&&window.i18n.toggleLanguage()"
+            data-i18n="lang_toggle">EN</button>
+  </div>
+</header>
+
+<div id="hero">
+  <div class="check-wrap">
+    <div class="check-circle">
+      <svg class="check-icon" viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+  </div>
+  <div class="success-title" data-i18n="order_placed">অর্ডার সম্পন্ন! 🎉</div>
+  <p class="success-sub" data-i18n="thank_you">আপনার অর্ডারের জন্য ধন্যবাদ!</p>
+</div>
+
+<div id="order-card">
+  <div class="num-box">
+    <div class="num-lbl" data-i18n="order_number">অর্ডার নম্বর</div>
+    <div class="num-val" id="order-num">—</div>
+  </div>
+</div>
+
+<div id="summary-card">
+  <div class="sum-box">
+    <div class="sum-title">🛍️ Order Summary</div>
+    <div id="sum-items"></div>
+    <div class="total-row" id="total-row" style="display:none">
+      <span class="total-lbl" data-i18n="total">মোট</span>
+      <span class="total-val" id="grand-total">৳0</span>
+    </div>
+  </div>
+</div>
+
+<div id="cta-section">
+  <button class="cta-btn cta-wa tap" id="wa-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.5 14.4c-.3-.1-1.8-.9-2-.97-.3-.1-.5-.1-.7.1
+        -.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5
+        -.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5
+        .2-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.7-1.6-.9-2.2
+        -.2-.6-.5-.5-.7-.5-.2 0-.4 0-.6 0-.2 0-.5.1-.8.4
+        -.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5
+        .7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4
+        .2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/>
+      <path d="M12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.1 1.6 5.9
+        L0 24l6.3-1.7A12 12 0 1012 0zm0 22c-1.8 0-3.5-.5-5-1.4
+        l-.4-.2-3.7 1 1-3.6-.2-.4A10 10 0 0112 2c5.5 0 10 4.5
+        10 10s-4.5 10-10 10z"/>
+    </svg>
+    <span data-i18n="track_whatsapp">হোয়াটসঅ্যাপে ট্র্যাক করুন</span>
+  </button>
+  <a href="index.html" class="cta-btn cta-shop tap">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="continue_shopping">কেনাকাটা চালিয়ে যান</span>
+  </a>
+</div>
+
+<!-- Bottom Nav -->
+<nav id="bnav">
+  <a href="index.html" class="ntab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav_home">হোম</span>
+  </a>
+  <a href="shop.html" class="ntab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="nav_shop">শপ</span>
+  </a>
+  <a href="cart.html" class="ntab" style="position:relative">
+    <div style="position:relative;display:inline-block">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/>
+        <circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2
+          0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge cbadge" data-count="0" style="display:none">
+        0
+      </span>
+    </div>
+    <span data-i18n="nav_cart">কার্ট</span>
+  </a>
+  <a href="contact.html" class="ntab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2
+        19.79 19.79 0 01-8.63-3.07
+        A19.5 19.5 0 013.1 10.81
+        19.79 19.79 0 01.06 2.22
+        A2 2 0 012.03 0h3a2 2 0 012 1.72
+        c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11
+        L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0
+        012.11-.45c.91.34 1.85.57 2.81.7
+        A2 2 0 0122 14.92z"/>
+    </svg>
+    <span data-i18n="nav_contact">যোগাযোগ</span>
+  </a>
+</nav>
+
+<script src="js/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cart.js"></script>
+<script>
+var WA_NUM      = '8801745062751';
+var _orderId    = null;
+var _orderNum   = null;
+
+var t  = function(k,v){ return window.i18n  ? window.i18n.t(k,v)        : k; };
+var fp = function(a)  { return window.utils ? window.utils.formatPrice(a): '৳'+a; };
+var gl = function()   { return window.utils ? window.utils.getLang()      : 'bn'; };
+
+function fireConfetti() {
+  var cv = confetti.create(
+    document.getElementById('confetti-canvas'),
+    { resize: true, useWorker: false }
+  );
+  cv({ particleCount: 120, spread: 80, origin: { y: 0.5 },
+    colors: ['#4F46E5','#10B981','#F43F5E','#F59E0B','#8B5CF6'] });
+  setTimeout(function() {
+    cv({ particleCount: 80, angle: 60,  spread: 55,
+         origin: { x: 0, y: 0.6 } });
+    cv({ particleCount: 80, angle: 120, spread: 55,
+         origin: { x: 1, y: 0.6 } });
+  }, 400);
+}
+
+async function loadOrder(id) {
+  try {
+    if (!window.supabase) {
+      await new Promise(function(r) {
+        window.addEventListener('supabaseReady', r, { once: true });
+      });
+    }
+    var iRes = await window.supabase
+      .from('order_items').select('*').eq('order_id', id);
+    var oRes = await window.supabase
+      .from('orders').select('total').eq('id', id).single();
+    var items = iRes.data || [];
+    var order = oRes.data;
+    if (!items.length) return;
+    document.getElementById('sum-items').innerHTML = items.map(function(it) {
+      return '<div class="sum-item">' +
+        '<img class="si-img" src="' +
+          (it.product_image || 'assets/placeholder.jpg') +
+          '" alt="' + it.product_name + '" loading="lazy"/>' +
+        '<div class="si-info">' +
+          '<div class="si-name">' + it.product_name + '</div>' +
+          '<div class="si-sub">' + fp(it.unit_price) +
+            ' \u00d7 ' + it.quantity + '</div>' +
+        '</div>' +
+        '<div class="si-price">' + fp(it.total_price) + '</div>' +
+      '</div>';
+    }).join('');
+    if (order) {
+      document.getElementById('grand-total').textContent = fp(order.total);
+      document.getElementById('total-row').style.display = 'flex';
+    }
+    document.getElementById('summary-card').style.display = 'block';
+  } catch(e) { console.error('loadOrder:', e); }
+}
+
+document.getElementById('wa-btn').addEventListener('click', function() {
+  var lang = gl();
+  var msg  = lang === 'bn'
+    ? 'আমার অর্ডার ট্র্যাক করতে চাই।\n\u0985\u09b0\u09cd\u09a1\u09be\u09b0 \u09a8\u0982: '
+      + (_orderNum || '')
+    : 'I would like to track my order.\nOrder No: ' + (_orderNum || '');
+  window.open(
+    'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(msg),
+    '_blank'
+  );
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  var lang = localStorage.getItem('lang') || 'bn';
+  if (window.i18n) window.i18n.setLanguage(lang);
+  if (window.cart) window.cart.renderCartBadge();
+
+  var p    = new URLSearchParams(window.location.search);
+  _orderId = p.get('id');
+  _orderNum = p.get('order') ? decodeURIComponent(p.get('order')) : null;
+
+  var display = _orderNum || (_orderId ? _orderId.slice(0,8).toUpperCase() : '—');
+  document.getElementById('order-num').textContent = display;
+
+  setTimeout(fireConfetti, 300);
+
+  if (window.cart) window.cart.clearCart();
+  sessionStorage.removeItem('applied_discount');
+
+  if (_orderId) loadOrder(_orderId);
+});
+</script>
+</body>
+</html>

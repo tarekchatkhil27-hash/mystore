@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="bn" class="lang-bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="theme-color" content="#4F46E5"/>
+<title>যোগাযোগ | Smart Supper Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#4F46E5;--primary-dark:#3730A3;--accent:#F43F5E;
+  --success:#10B981;--wa:#25D366;--bg:#FAFAFA;--surface:#fff;
+  --surface2:#F3F4F6;--text:#111827;--text2:#6B7280;--muted:#9CA3AF;
+  --border:#E5E7EB;--font:'Tiro Bangla',serif;--hh:56px;--nh:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  padding-bottom:calc(var(--nh)+20px);-webkit-font-smoothing:antialiased}
+.lang-en *{font-family:'Times New Roman',Times,serif}
+.lang-bn *{font-family:'Tiro Bangla',serif}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
+img{max-width:100%;display:block}
+.tap{-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .12s}
+.tap:active{transform:scale(.96);opacity:.82}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fu .42s ease both}
+
+/* Header */
+#hdr{position:sticky;top:0;z-index:900;height:var(--hh);
+  background:rgba(255,255,255,.93);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.hi{display:flex;align-items:center;padding:0 12px;height:100%;
+  max-width:480px;margin:0 auto;gap:8px}
+.ib{width:38px;height:38px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;color:var(--text);flex-shrink:0}
+.ib:active{background:var(--surface2)}
+.ib svg{width:20px;height:20px}
+.ht{flex:1;font-size:1rem;font-weight:700}
+.ltb{height:28px;padding:0 11px;border-radius:999px;background:var(--primary);
+  color:#fff;font-size:.7rem;font-weight:700;
+  font-family:'Tiro Bangla','Times New Roman',serif;
+  transition:transform .15s;flex-shrink:0}
+.ltb:active{transform:scale(.9)}
+
+/* Page wrapper */
+.pw{max-width:480px;margin:0 auto;padding:16px 14px 0}
+
+/* WhatsApp button */
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;height:56px;background:var(--wa);color:#fff;
+  border-radius:16px;font-size:1rem;font-weight:700;
+  font-family:var(--font);margin-bottom:16px;
+  box-shadow:0 4px 16px rgba(37,211,102,.35);
+  transition:transform .15s,box-shadow .15s}
+.wa-btn:active{transform:scale(.97);box-shadow:none}
+.wa-btn svg{width:22px;height:22px;flex-shrink:0}
+
+/* Info cards */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.info-card{background:var(--surface);border-radius:16px;
+  padding:16px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06);
+  border:1px solid var(--border)}
+.info-icon{font-size:1.4rem;margin-bottom:8px}
+.info-label{font-size:.7rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.info-value{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.45}
+.info-value a{color:var(--primary)}
+
+/* Contact form */
+.form-card{background:var(--surface);border-radius:20px;
+  padding:20px 16px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:16px}
+.form-title{font-size:.88rem;font-weight:700;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:.78rem;font-weight:600;color:var(--text2);margin-bottom:5px}
+.fi{width:100%;height:46px;border:1.5px solid var(--border);
+  border-radius:10px;padding:0 13px;font-size:.9rem;
+  font-family:var(--font);color:var(--text);background:var(--surface);
+  outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+.fi:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+.fi.err{border-color:var(--accent);box-shadow:0 0 0 3px rgba(244,63,94,.08)}
+textarea.fi{height:100px;padding:11px 13px;resize:none;line-height:1.55}
+.fe{font-size:.72rem;color:var(--accent);margin-top:3px;font-weight:500;display:none}
+.fe.show{display:block}
+
+/* Submit button */
+.sub-btn{width:100%;height:50px;background:var(--primary);color:#fff;
+  border-radius:14px;font-size:.97rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--font);
+  box-shadow:0 4px 14px rgba(79,70,229,.3);
+  transition:background .18s,transform .12s,box-shadow .15s}
+.sub-btn:active{transform:scale(.97);background:var(--primary-dark);box-shadow:none}
+.sub-btn:disabled{background:var(--border);color:var(--muted);
+  box-shadow:none;cursor:not-allowed}
+.sub-btn svg{width:18px;height:18px}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;
+  animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Bottom nav */
+#bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);
+  display:flex;align-items:stretch;z-index:800;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.nt{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;color:var(--muted);font-size:.6rem;
+  font-weight:600;position:relative;padding:6px 0;
+  font-family:var(--font);-webkit-tap-highlight-color:transparent}
+.nt:active{background:var(--surface2)}
+.nt.active{color:var(--primary)}
+.nt svg{width:22px;height:22px}
+.ni{position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:3px;background:var(--primary);
+  border-radius:0 0 4px 4px;opacity:0;transition:opacity .2s}
+.nt.active .ni{opacity:1}
+.cb{position:relative;display:inline-block}
+.cart-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;
+  padding:0 4px;border-radius:999px;background:var(--accent);color:#fff;
+  font-size:.58rem;font-weight:700;display:inline-flex;
+  align-items:center;justify-content:center}
+.cart-badge[data-count="0"]{display:none}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header id="hdr">
+  <div class="hi">
+    <button class="ib tap" onclick="history.back()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <span class="ht" data-i18n="contact_us">আমাদের সাথে যোগাযোগ করুন</span>
+    <button class="ltb tap"
+            onclick="window.i18n&&window.i18n.toggleLanguage()"
+            data-i18n="lang_toggle">EN</button>
+  </div>
+</header>
+
+<div class="pw">
+
+  <!-- WhatsApp CTA -->
+  <a href="https://wa.me/8801745062751" target="_blank" rel="noopener"
+     class="wa-btn tap fu">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148
+        -.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15
+        -1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018
+        -.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099
+        -.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5
+        -.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297
+        -1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2
+        5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571
+        -.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272
+        -.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214
+        -3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436
+        -9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893
+        6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0
+        0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057
+        24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335
+        11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    <span data-i18n="chat_whatsapp">হোয়াটসঅ্যাপে আমাদের সাথে কথা বলুন</span>
+  </a>
+
+  <!-- Contact info cards -->
+  <div class="info-grid fu" style="animation-delay:.08s">
+    <div class="info-card">
+      <div class="info-icon">📞</div>
+      <div class="info-label" data-i18n="phone_number">ফোন</div>
+      <div class="info-value">
+        <a href="tel:+8801745062751">+880 1745-062751</a>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📧</div>
+      <div class="info-label">Email</div>
+      <div class="info-value">
+        <a href="mailto:ngs.ec.001@gmail.com">ngs.ec.001@gmail.com</a>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📍</div>
+      <div class="info-label">Location</div>
+      <div class="info-value" id="loc-val">ঢাকা, বাংলাদেশ</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🕐</div>
+      <div class="info-label" data-i18n="business_hours">ব্যবসার সময়</div>
+      <div class="info-value" data-i18n="business_hours_val">শনি–বৃহঃ: সকাল ৯টা–রাত ৯টা</div>
+    </div>
+  </div>
+
+  <!-- Contact form -->
+  <div class="form-card fu" style="animation-delay:.14s">
+    <div class="form-title">✉️ Send us a message</div>
+
+    <div class="fg">
+      <label class="fl" for="cn" data-i18n="your_name">আপনার নাম</label>
+      <input id="cn" class="fi" type="text" autocomplete="name"
+             autocapitalize="words"
+             data-i18n-placeholder="your_name"
+             placeholder="আপনার নাম"/>
+      <div class="fe" id="err-cn" data-i18n="required_field">
+        এই ঘরটি পূরণ করা আবশ্যক
+      </div>
+    </div>
+
+    <div class="fg">
+      <label class="fl" for="ce" data-i18n="your_email">আপনার ইমেইল (ঐচ্ছিক)</label>
+      <input id="ce" class="fi" type="email" autocomplete="email"
+             inputmode="email"
+             data-i18n-placeholder="your_email"
+             placeholder="আপনার ইমেইল (ঐচ্ছিক)"/>
+    </div>
+
+    <div class="fg">
+      <label class="fl" for="cp" data-i18n="your_phone">আপনার ফোন নম্বর</label>
+      <input id="cp" class="fi" type="tel" autocomplete="tel"
+             inputmode="tel"
+             data-i18n-placeholder="your_phone"
+             placeholder="আপনার ফোন নম্বর"/>
+    </div>
+
+    <div class="fg">
+      <label class="fl" for="cs" data-i18n="subject">বিষয়</label>
+      <input id="cs" class="fi" type="text"
+             data-i18n-placeholder="subject"
+             placeholder="বিষয়"/>
+    </div>
+
+    <div class="fg">
+      <label class="fl" for="cm" data-i18n="message">বার্তা</label>
+      <textarea id="cm" class="fi"
+                data-i18n-placeholder="message"
+                placeholder="বার্তা"></textarea>
+      <div class="fe" id="err-cm" data-i18n="required_field">
+        এই ঘরটি পূরণ করা আবশ্যক
+      </div>
+    </div>
+
+    <button id="sub-btn" class="sub-btn tap" onclick="sendMessage()">
+      <div class="spin" id="sub-spin" style="display:none"></div>
+      <svg id="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span id="sub-lbl" data-i18n="send_message">বার্তা পাঠান</span>
+    </button>
+  </div>
+
+</div>
+
+<!-- Bottom nav -->
+<nav id="bnav">
+  <a href="index.html" class="nt tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav_home">হোম</span>
+  </a>
+  <a href="shop.html" class="nt tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="nav_shop">শপ</span>
+  </a>
+  <a href="cart.html" class="nt tap">
+    <div class="ni"></div>
+    <div class="cb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" data-count="0" style="display:none">0</span>
+    </div>
+    <span data-i18n="nav_cart">কার্ট</span>
+  </a>
+  <a href="contact.html" class="nt active tap">
+    <div class="ni"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0
+        013.1 10.81 19.79 19.79 0 01.06 2.22 2 2 0 012.03 0h3a2 2 0 012 1.72
+        c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6
+        l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+    </svg>
+    <span data-i18n="nav_contact">যোগাযোগ</span>
+  </a>
+</nav>
+
+<script src="js/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cart.js"></script>
+<script>
+var _sending = false;
+
+var t  = function(k,v){ return window.i18n ? window.i18n.t(k,v) : k; };
+var gl = function(){ return window.utils ? window.utils.getLang() : 'bn'; };
+
+function validate() {
+  var ok = true;
+  var name = document.getElementById('cn');
+  var msg  = document.getElementById('cm');
+  var errN = document.getElementById('err-cn');
+  var errM = document.getElementById('err-cm');
+
+  if (!name.value.trim()) {
+    name.classList.add('err'); errN.classList.add('show'); ok = false;
+  } else {
+    name.classList.remove('err'); errN.classList.remove('show');
+  }
+  if (!msg.value.trim()) {
+    msg.classList.add('err'); errM.classList.add('show'); ok = false;
+  } else {
+    msg.classList.remove('err'); errM.classList.remove('show');
+  }
+  return ok;
+}
+
+['cn','cm'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    this.classList.remove('err');
+    var map = { cn:'err-cn', cm:'err-cm' };
+    var er = document.getElementById(map[id]);
+    if (er) er.classList.remove('show');
+  });
+});
+
+async function sendMessage() {
+  if (_sending) return;
+  if (!validate()) return;
+
+  _sending = true;
+  var btn  = document.getElementById('sub-btn');
+  var spin = document.getElementById('sub-spin');
+  var icon = document.getElementById('sub-icon');
+  var lbl  = document.getElementById('sub-lbl');
+
+  btn.disabled       = true;
+  spin.style.display = 'block';
+  icon.style.display = 'none';
+  lbl.textContent    = gl() === 'bn' ? 'পাঠানো হচ্ছে...' : 'Sending...';
+
+  if (!window.supabase) {
+    await new Promise(function(r) {
+      window.addEventListener('supabaseReady', r, { once: true });
+    });
+  }
+
+  try {
+    var payload = {
+      name:    document.getElementById('cn').value.trim(),
+      email:   document.getElementById('ce').value.trim() || null,
+      phone:   document.getElementById('cp').value.trim() || null,
+      subject: document.getElementById('cs').value.trim() || null,
+      message: document.getElementById('cm').value.trim()
+    };
+
+    var res = await window.supabase.from('contact_messages').insert(payload);
+    if (res.error) throw res.error;
+
+    // Success
+    if (window.utils) window.utils.showToast(t('message_sent'), 'success');
+
+    // Reset form
+    ['cn','ce','cp','cs','cm'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+
+    // Button success state
+    spin.style.display = 'none';
+    icon.style.display = 'block';
+    lbl.textContent    = t('message_sent');
+    setTimeout(function() {
+      btn.disabled    = false;
+      lbl.setAttribute('data-i18n','send_message');
+      lbl.textContent = t('send_message');
+      _sending = false;
+    }, 3000);
+
+  } catch (err) {
+    console.error('sendMessage:', err);
+    spin.style.display = 'none';
+    icon.style.display = 'block';
+    lbl.setAttribute('data-i18n','send_message');
+    lbl.textContent    = t('send_message');
+    btn.disabled       = false;
+    _sending           = false;
+    if (window.utils) window.utils.showToast(
+      gl() === 'bn'
+        ? 'বার্তা পাঠানো যায়নি। আবার চেষ্টা করুন।'
+        : 'Could not send message. Please try again.',
+      'error'
+    );
+  }
+}
+
+window.addEventListener('languageChanged', function(e) {
+  var lang = e.detail ? e.detail.lang : gl();
+  var locEl = document.getElementById('loc-val');
+  if (locEl) locEl.textContent = lang === 'bn' ? 'ঢাকা, বাংলাদেশ' : 'Dhaka, Bangladesh';
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  var lang = localStorage.getItem('lang') || 'bn';
+  if (window.i18n) window.i18n.setLanguage(lang);
+  if (window.cart) window.cart.renderCartBadge();
+  var locEl = document.getElementById('loc-val');
+  if (locEl) locEl.textContent = lang === 'bn' ? 'ঢাকা, বাংলাদেশ' : 'Dhaka, Bangladesh';
+});
+</script>
+</body>
+</html>

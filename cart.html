@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="bn" class="lang-bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#4F46E5" />
+  <title>কার্ট | Smart Supper Shop</title>
+  <meta name="description" content="Your shopping cart at Smart Supper Shop — স্মার্ট সুপার শপ" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Variables & Reset ──────────────────────────────── */
+    :root {
+      --primary:        #4F46E5;
+      --primary-dark:   #3730A3;
+      --accent:         #F43F5E;
+      --success:        #10B981;
+      --warning:        #F59E0B;
+      --bg:             #FAFAFA;
+      --surface:        #FFFFFF;
+      --surface2:       #F3F4F6;
+      --text-primary:   #111827;
+      --text-secondary: #6B7280;
+      --text-muted:     #9CA3AF;
+      --border:         #E5E7EB;
+      --shadow-sm:      0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md:      0 4px 16px rgba(0,0,0,0.09);
+      --radius-sm:      10px;
+      --radius-md:      16px;
+      --radius-lg:      22px;
+      --font-body:      'Tiro Bangla', serif;
+      --bottom-nav-h:   64px;
+      --header-h:       56px;
+      --checkout-btn-h: 72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--bottom-nav-h) + var(--checkout-btn-h) + 8px);
+      -webkit-font-smoothing: antialiased;
+    }
+    .lang-en * { font-family: 'Times New Roman', Times, serif; }
+    .lang-bn * { font-family: 'Tiro Bangla', serif; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+    .tap { -webkit-tap-highlight-color: transparent; transition: transform 0.12s, opacity 0.12s; }
+    .tap:active { transform: scale(0.96); opacity: 0.82; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.38s ease both; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    #main-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      height: var(--header-h);
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-primary);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .icon-btn:active { background: var(--surface2); }
+    .icon-btn svg { width: 20px; height: 20px; }
+    .header-title-wrap {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      overflow: hidden;
+    }
+    .header-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .header-count {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .lang-toggle-btn {
+      height: 28px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      transition: transform 0.15s;
+      white-space: nowrap;
+      font-family: 'Tiro Bangla', 'Times New Roman', serif;
+      flex-shrink: 0;
+    }
+    .lang-toggle-btn:active { transform: scale(0.9); }
+    .cart-badge {
+      position: absolute; top: -4px; right: -4px;
+      min-width: 16px; height: 16px;
+      padding: 0 4px; border-radius: 999px;
+      background: var(--accent); color: #fff;
+      font-size: 0.58rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .cart-badge[data-count="0"] { display: none; }
+
+    /* ── Empty State ─────────────────────────────────────── */
+    #empty-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 32px 40px;
+      text-align: center;
+    }
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+    .empty-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .empty-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .start-shopping-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 13px 28px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .start-shopping-btn:active { transform: scale(0.96); box-shadow: none; }
+    .start-shopping-btn svg { width: 18px; height: 18px; }
+
+    /* ── Cart Items ──────────────────────────────────────── */
+    #cart-section { padding: 12px 0 0; }
+
+    .cart-item-wrap {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+
+    /* Swipe-to-delete */
+    .swipe-delete-bg {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 80px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      gap: 4px;
+      flex-direction: column;
+      font-family: var(--font-body);
+    }
+    .swipe-delete-bg svg { width: 20px; height: 20px; }
+
+    .cart-item {
+      position: relative;
+      background: var(--surface);
+      margin: 0 14px;
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+      transform: translateX(0);
+      transition: transform 0.25s ease, opacity 0.25s ease, max-height 0.35s ease, margin 0.3s ease, padding 0.3s ease;
+      touch-action: pan-y;
+      z-index: 1;
+    }
+
+    .cart-item.removing {
+      opacity: 0;
+      max-height: 0 !important;
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      pointer-events: none;
+    }
+
+    .cart-item-img {
+      width: 72px; height: 72px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--surface2);
+      cursor: pointer;
+    }
+
+    .cart-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-name {
+      font-size: 0.87rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .cart-item-unit {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .cart-item-price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cart-item-total {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Quantity stepper */
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border-radius: 999px;
+      overflow: hidden;
+      gap: 0;
+    }
+    .qty-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .qty-btn:active { background: var(--border); }
+    .qty-val {
+      min-width: 32px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Delete button (top-right of card) */
+    .delete-btn {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(244,63,94,0.08);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.12s;
+      align-self: flex-start;
+    }
+    .delete-btn:active { background: rgba(244,63,94,0.18); transform: scale(0.88); }
+    .delete-btn svg { width: 15px; height: 15px; }
+
+    /* Divider between items */
+    .items-divider {
+      height: 8px;
+    }
+
+    /* ── Coupon Section ──────────────────────────────────── */
+    #coupon-section {
+      margin: 14px 14px 0;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .coupon-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .coupon-input {
+      flex: 1;
+      height: 44px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 14px;
+      font-size: 0.88rem;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--surface2);
+      outline: none;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: border-color 0.2s;
+    }
+    .coupon-input:focus { border-color: var(--primary); background: var(--surface); }
+    .coupon-input.error { border-color: var(--accent); }
+    .coupon-input.success { border-color: var(--success); }
+    .apply-btn {
+      height: 44px;
+      padding: 0 18px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      white-space: nowrap;
+      transition: background 0.18s, transform 0.12s;
+      flex-shrink: 0;
+    }
+    .apply-btn:active { transform: scale(0.94); background: var(--primary-dark); }
+    .apply-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+    .coupon-feedback {
+      margin-top: 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .coupon-feedback.show { display: flex; }
+    .coupon-feedback.success-msg { color: var(--success); }
+    .coupon-feedback.error-msg   { color: var(--accent); }
+    .applied-coupon-row {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      background: rgba(16,185,129,0.08);
+      border: 1.5px solid rgba(16,185,129,0.25);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+    }
+    .applied-coupon-row.show { display: flex; }
+    .applied-code-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--success);
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+    .remove-coupon-btn {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-body);
+      padding: 2px 6px;
+    }
+    .remove-coupon-btn:active { opacity: 0.7; }
+
+    /* ── Order Summary ───────────────────────────────────── */
+    #summary-card {
+      margin: 14px 14px 0;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 18px 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .summary-label {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+    .summary-value {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .summary-value.free-tag {
+      color: var(--success);
+      font-weight: 700;
+    }
+    .summary-value.discount-tag {
+      color: var(--success);
+      font-weight: 700;
+    }
+    .summary-divider {
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: 12px 0;
+    }
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-total-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .summary-total-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .free-delivery-hint {
+      margin-top: 10px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .free-delivery-hint span { color: var(--success); font-weight: 600; }
+
+    /* ── Sticky Checkout Button ──────────────────────────── */
+    #checkout-bar {
+      position: fixed;
+      bottom: var(--bottom-nav-h);
+      left: 0; right: 0;
+      z-index: 850;
+      background: rgba(255,255,255,0.97);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+    #checkout-btn {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-family: var(--font-body);
+      box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+      transition: background 0.18s, transform 0.12s, box-shadow 0.15s;
+    }
+    #checkout-btn:active { transform: scale(0.97); box-shadow: none; background: var(--primary-dark); }
+    .checkout-btn-total {
+      font-size: 0.9rem;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+    .checkout-btn-arrow {
+      display: flex; align-items: center; gap: 5px;
+    }
+    .checkout-btn-arrow svg { width: 18px; height: 18px; }
+
+    /* ── Bottom Navigation ───────────────────────────────── */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--bottom-nav-h);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: stretch;
+      z-index: 800;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    }
+    .nav-tab {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 0.6rem;
+      font-weight: 600;
+      position: relative;
+      padding: 6px 0;
+      font-family: var(--font-body);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-tab:active { background: var(--surface2); }
+    .nav-tab.active { color: var(--primary); }
+    .nav-tab svg { width: 22px; height: 22px; }
+    .nav-indicator {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 28px; height: 3px;
+      background: var(--primary);
+      border-radius: 0 0 4px 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-tab.active .nav-indicator { opacity: 1; }
+    .nav-cart-wrap { position: relative; display: inline-block; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────── -->
+<header id="main-header">
+  <div class="header-inner">
+    <button onclick="history.back()" class="icon-btn tap" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <div class="header-title-wrap">
+      <span class="header-title" data-i18n="my_cart">আমার কার্ট</span>
+      <span class="header-count" id="header-count"></span>
+    </div>
+    <button class="lang-toggle-btn tap" onclick="window.i18n && window.i18n.toggleLanguage()" data-i18n="lang_toggle">EN</button>
+    <a href="cart.html" class="icon-btn tap" aria-label="Cart" style="position:relative;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" id="header-cart-badge" data-count="0" style="display:none;">0</span>
+    </a>
+  </div>
+</header>
+
+<!-- ── Main content ─────────────────────────────────────────── -->
+<main id="main-content">
+
+  <!-- Empty state -->
+  <div id="empty-state" class="fade-up">
+    <div class="empty-icon">🛒</div>
+    <div class="empty-title" data-i18n="cart_empty">আপনার কার্ট খালি</div>
+    <div class="empty-sub">আপনার পছন্দের পণ্য কার্টে যোগ করুন</div>
+    <a href="shop.html" class="start-shopping-btn tap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span data-i18n="start_shopping">কেনাকাটা শুরু করুন</span>
+    </a>
+  </div>
+
+  <!-- Cart items -->
+  <div id="cart-section" style="display:none;">
+
+    <!-- Items list -->
+    <div id="items-list"></div>
+
+    <!-- Coupon -->
+    <div id="coupon-section" class="fade-up">
+      <div class="coupon-row">
+        <input type="text"
+               id="coupon-input"
+               class="coupon-input"
+               data-i18n-placeholder="coupon_placeholder"
+               placeholder="কুপন কোড লিখুন"
+               maxlength="20"
+               autocomplete="off"
+               autocapitalize="characters" />
+        <button id="apply-btn" class="apply-btn tap" onclick="applyCoupon()" data-i18n="apply_coupon">প্রয়োগ করুন</button>
+      </div>
+      <div class="coupon-feedback" id="coupon-feedback">
+        <span id="coupon-feedback-text"></span>
+      </div>
+      <div class="applied-coupon-row" id="applied-coupon-row">
+        <span class="applied-code-text" id="applied-code-text"></span>
+        <button class="remove-coupon-btn tap" onclick="removeCoupon()" data-i18n="remove">সরিয়ে দিন</button>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div id="summary-card" class="fade-up">
+      <div class="summary-title">অর্ডার সারসংক্ষেপ</div>
+      <div class="summary-row">
+        <span class="summary-label" data-i18n="subtotal">মোট পণ্যমূল্য</span>
+        <span class="summary-value" id="sum-subtotal">৳0</span>
+      </div>
+      <div class="summary-row" id="discount-row" style="display:none;">
+        <span class="summary-label" data-i18n="discount">ছাড়</span>
+        <span class="summary-value discount-tag" id="sum-discount">−৳0</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label" data-i18n="delivery_fee">ডেলিভারি চার্জ</span>
+        <span class="summary-value" id="sum-delivery">৳60</span>
+      </div>
+      <hr class="summary-divider" />
+      <div class="summary-total-row">
+        <span class="summary-total-label" data-i18n="total">মোট</span>
+        <span class="summary-total-value" id="sum-total">৳0</span>
+      </div>
+      <div class="free-delivery-hint" id="delivery-hint" style="display:none;"></div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ── Sticky Checkout Bar ───────────────────────────────────── -->
+<div id="checkout-bar" style="display:none;">
+  <button id="checkout-btn" class="tap" onclick="goCheckout()">
+    <div class="checkout-btn-arrow">
+      <span data-i18n="proceed_checkout">চেকআউটে যান</span>
+    </div>
+    <span class="checkout-btn-total" id="checkout-btn-total">৳0</span>
+  </button>
+</div>
+
+<!-- ── Bottom Navigation ─────────────────────────────────────── -->
+<nav id="bottom-nav">
+  <a href="index.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav_home">হোম</span>
+  </a>
+  <a href="shop.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <span data-i18n="nav_shop">শপ</span>
+  </a>
+  <a href="cart.html" class="nav-tab active tap">
+    <div class="nav-indicator"></div>
+    <div class="nav-cart-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-badge" data-count="0" style="display:none;">0</span>
+    </div>
+    <span data-i18n="nav_cart">কার্ট</span>
+  </a>
+  <a href="contact.html" class="nav-tab tap">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.1 10.81 19.79 19.79 0 01.06 2.22 2 2 0 012.03 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+    </svg>
+    <span data-i18n="nav_contact">যোগাযোগ</span>
+  </a>
+</nav>
+
+<!-- Scripts -->
+<script src="js/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cart.js"></script>
+
+<script>
+/* ============================================================
+   CART PAGE LOGIC
+============================================================ */
+
+// ── State ──────────────────────────────────────────────────
+let _appliedDiscount = null;   // { code, discountAmount, discountId }
+const FREE_DELIVERY_THRESHOLD = 500;
+const DELIVERY_FEE = 60;
+
+// ── Helpers ────────────────────────────────────────────────
+const t  = (key, vars) => window.i18n  ? window.i18n.t(key, vars)     : key;
+const fp = (amt)       => window.utils ? window.utils.formatPrice(amt) : '৳' + amt;
+const gl = ()          => window.utils ? window.utils.getLang()         : 'bn';
+const haptic = ()      => window.utils && window.utils.triggerHaptic();
+
+function getProductName(item) {
+  if (!window.utils) return item.name_bn || item.name_en || '';
+  // cart items have name_en/name_bn directly
+  const lang = gl();
+  if (lang === 'bn' && item.name_bn && item.name_bn.trim()) return item.name_bn;
+  return item.name_en || '';
+}
+
+function getUnitLabel(item) {
+  const lang = gl();
+  if (lang === 'bn' && item.unit_bn && item.unit_bn.trim()) return item.unit_bn;
+  return item.unit_en || '';
+}
+
+// ── Render the full cart ────────────────────────────────────
+function renderCart() {
+  const cartItems    = window.cart ? window.cart.getCart() : [];
+  const emptyState   = document.getElementById('empty-state');
+  const cartSection  = document.getElementById('cart-section');
+  const checkoutBar  = document.getElementById('checkout-bar');
+
+  // Update header count
+  const count = cartItems.reduce((s, i) => s + i.quantity, 0);
+  document.getElementById('header-count').textContent =
+    count > 0 ? `(${count})` : '';
+
+  if (cartItems.length === 0) {
+    emptyState.style.display  = 'flex';
+    cartSection.style.display = 'none';
+    checkoutBar.style.display = 'none';
+    return;
+  }
+
+  emptyState.style.display  = 'none';
+  cartSection.style.display = 'block';
+  checkoutBar.style.display = 'block';
+
+  renderItems(cartItems);
+  updateSummary();
+}
+
+// ── Render item cards ───────────────────────────────────────
+function renderItems(cartItems) {
+  const list = document.getElementById('items-list');
+  list.innerHTML = cartItems.map((item, idx) => buildItemHTML(item, idx)).join(
+    '<div class="items-divider"></div>'
+  );
+
+  // Attach swipe listeners
+  list.querySelectorAll('.cart-item').forEach(el => attachSwipe(el));
+}
+
+function buildItemHTML(item) {
+  const name  = getProductName(item);
+  const unit  = getUnitLabel(item);
+  const total = fp(item.price * item.quantity);
+  const price = fp(item.price);
+
+  return `
+    <div class="cart-item-wrap" data-id="${item.id}">
+      <div class="swipe-delete-bg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+          <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+        </svg>
+        <span data-i18n="remove">${t('remove')}</span>
+      </div>
+      <div class="cart-item" data-id="${item.id}">
+        <img class="cart-item-img tap"
+             src="${item.image_url || 'assets/placeholder.jpg'}"
+             alt="${name}"
+             onclick="window.location.href='product.html?id=${item.id}'"
+             loading="lazy" />
+        <div class="cart-item-body">
+          <div class="cart-item-name tap" onclick="window.location.href='product.html?id=${item.id}'">${name}</div>
+          ${unit ? `<div class="cart-item-unit">${t('quantity')}: ${unit}</div>` : ''}
+          <div class="cart-item-price-row">
+            <div class="qty-stepper">
+              <button class="qty-btn tap" onclick="changeQty('${item.id}', -1)">−</button>
+              <span class="qty-val">${item.quantity}</span>
+              <button class="qty-btn tap" onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+            <span class="cart-item-total">${total}</span>
+          </div>
+        </div>
+        <button class="delete-btn tap" onclick="removeItem('${item.id}')" aria-label="Remove">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>`;
+}
+
+// ── Swipe-to-delete ─────────────────────────────────────────
+function attachSwipe(itemEl) {
+  let startX = 0;
+  let currentX = 0;
+  let swiping = false;
+  const THRESHOLD = 72;
+
+  itemEl.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    swiping = true;
+  }, { passive: true });
+
+  itemEl.addEventListener('touchmove', e => {
+    if (!swiping) return;
+    const dx = e.touches[0].clientX - startX;
+    currentX = Math.min(0, dx); // only left swipe
+    if (Math.abs(currentX) > 10) {
+      itemEl.style.transform = `translateX(${Math.max(currentX, -80)}px)`;
+    }
+  }, { passive: true });
+
+  itemEl.addEventListener('touchend', () => {
+    swiping = false;
+    if (Math.abs(currentX) >= THRESHOLD) {
+      const wrap = itemEl.closest('.cart-item-wrap');
+      const id   = wrap ? wrap.dataset.id : itemEl.dataset.id;
+      removeItem(id);
+    } else {
+      itemEl.style.transform = 'translateX(0)';
+    }
+    currentX = 0;
+  });
+}
+
+// ── Change quantity ─────────────────────────────────────────
+function changeQty(productId, delta) {
+  haptic();
+  const cartItems = window.cart ? window.cart.getCart() : [];
+  const item      = cartItems.find(i => i.id === productId);
+  if (!item) return;
+  const newQty = item.quantity + delta;
+  if (window.cart) window.cart.updateQuantity(productId, newQty);
+  renderCart();
+}
+
+// ── Remove item with animation ──────────────────────────────
+function removeItem(productId) {
+  haptic();
+  // Find the wrap element
+  const wrap = document.querySelector(`.cart-item-wrap[data-id="${productId}"]`);
+  if (wrap) {
+    // Get current height for smooth collapse
+    const h = wrap.offsetHeight;
+    wrap.style.maxHeight = h + 'px';
+    wrap.style.transition = 'max-height 0.32s ease, opacity 0.25s ease, margin 0.3s ease';
+    // Trigger animation
+    requestAnimationFrame(() => {
+      wrap.style.maxHeight  = '0';
+      wrap.style.opacity    = '0';
+      wrap.style.overflow   = 'hidden';
+      wrap.style.marginBottom = '0';
+    });
+    setTimeout(() => {
+      if (window.cart) window.cart.removeFromCart(productId);
+      renderCart();
+    }, 320);
+  } else {
+    if (window.cart) window.cart.removeFromCart(productId);
+    renderCart();
+  }
+}
+
+// ── Calculate totals ────────────────────────────────────────
+function calcTotals() {
+  const subtotal      = window.cart ? window.cart.getCartTotal() : 0;
+  const discountAmt   = _appliedDiscount ? _appliedDiscount.discountAmount : 0;
+  const afterDiscount = Math.max(0, subtotal - discountAmt);
+  const deliveryFee   = afterDiscount >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
+  const total         = afterDiscount + deliveryFee;
+  return { subtotal, discountAmt, afterDiscount, deliveryFee, total };
+}
+
+// ── Update order summary ────────────────────────────────────
+function updateSummary() {
+  const { subtotal, discountAmt, deliveryFee, total } = calcTotals();
+  const lang = gl();
+
+  document.getElementById('sum-subtotal').textContent = fp(subtotal);
+
+  // Discount row
+  const discountRow = document.getElementById('discount-row');
+  if (discountAmt > 0) {
+    discountRow.style.display = 'flex';
+    document.getElementById('sum-discount').textContent = '−' + fp(discountAmt);
+  } else {
+    discountRow.style.display = 'none';
+  }
+
+  // Delivery
+  const deliveryEl = document.getElementById('sum-delivery');
+  if (deliveryFee === 0) {
+    deliveryEl.textContent = t('free');
+    deliveryEl.className   = 'summary-value free-tag';
+  } else {
+    deliveryEl.textContent = fp(deliveryFee);
+    deliveryEl.className   = 'summary-value';
+  }
+
+  // Total
+  document.getElementById('sum-total').textContent = fp(total);
+  document.getElementById('checkout-btn-total').textContent = fp(total);
+
+  // Free delivery hint
+  const hint = document.getElementById('delivery-hint');
+  if (deliveryFee > 0) {
+    const remaining = FREE_DELIVERY_THRESHOLD - subtotal + discountAmt;
+    if (remaining > 0) {
+      hint.style.display = 'block';
+      hint.innerHTML = lang === 'bn'
+        ? `আরও <span>${fp(remaining)}</span> এর কেনাকাটায় ডেলিভারি বিনামূল্যে 🎉`
+        : `Add <span>${fp(remaining)}</span> more for free delivery 🎉`;
+    } else {
+      hint.style.display = 'none';
+    }
+  } else {
+    hint.style.display = 'block';
+    hint.innerHTML = lang === 'bn'
+      ? `<span>✓ বিনামূল্যে ডেলিভারি প্রযোজ্য!</span>`
+      : `<span>✓ Free delivery applied!</span>`;
+  }
+}
+
+// ── Coupon apply ────────────────────────────────────────────
+async function applyCoupon() {
+  const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+  if (!code) return;
+
+  const btn      = document.getElementById('apply-btn');
+  const feedback = document.getElementById('coupon-feedback');
+  const input    = document.getElementById('coupon-input');
+  const lang     = gl();
+
+  btn.disabled    = true;
+  btn.textContent = lang === 'bn' ? 'যাচাই হচ্ছে...' : 'Checking...';
+  feedback.className   = 'coupon-feedback';
+  feedback.style.display = 'none';
+
+  const result = window.cart
+    ? await window.cart.applyDiscount(code)
+    : { valid: false, message: t('coupon_error') };
+
+  btn.disabled    = false;
+  btn.textContent = t('apply_coupon');
+
+  if (result.valid) {
+    _appliedDiscount = result;
+    input.classList.remove('error');
+    input.classList.add('success');
+    feedback.className = 'coupon-feedback show success-msg';
+    document.getElementById('coupon-feedback-text').textContent = result.message;
+    document.getElementById('applied-coupon-row').classList.add('show');
+    document.getElementById('applied-code-text').textContent = code;
+    document.getElementById('coupon-input').value = '';
+    if (window.utils) window.utils.showToast(result.message, 'success');
+    updateSummary();
+  } else {
+    _appliedDiscount = null;
+    input.classList.remove('success');
+    input.classList.add('error');
+    feedback.className = 'coupon-feedback show error-msg';
+    document.getElementById('coupon-feedback-text').textContent = result.message;
+    document.getElementById('applied-coupon-row').classList.remove('show');
+    if (window.utils) window.utils.showToast(result.message, 'error');
+    updateSummary();
+  }
+}
+
+// Allow Enter key on coupon input
+document.getElementById('coupon-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') applyCoupon();
+});
+
+// ── Remove coupon ────────────────────────────────────────────
+function removeCoupon() {
+  _appliedDiscount = null;
+  document.getElementById('coupon-input').value = '';
+  document.getElementById('coupon-input').classList.remove('success', 'error');
+  document.getElementById('coupon-feedback').className = 'coupon-feedback';
+  document.getElementById('applied-coupon-row').classList.remove('show');
+  updateSummary();
+  if (window.utils) window.utils.showToast(
+    gl() === 'bn' ? 'কুপন সরানো হয়েছে' : 'Coupon removed', 'info'
+  );
+}
+
+// ── Checkout navigation ──────────────────────────────────────
+function goCheckout() {
+  // Pass discount info to checkout page via sessionStorage
+  if (_appliedDiscount) {
+    sessionStorage.setItem('applied_discount', JSON.stringify(_appliedDiscount));
+  } else {
+    sessionStorage.removeItem('applied_discount');
+  }
+  window.location.href = 'checkout.html';
+}
+
+// ── languageChanged → re-render ─────────────────────────────
+window.addEventListener('languageChanged', function() {
+  const cartItems = window.cart ? window.cart.getCart() : [];
+  if (cartItems.length === 0) return;
+
+  // Re-render item names and unit labels
+  cartItems.forEach(item => {
+    const nameEls = document.querySelectorAll(
+      `.cart-item[data-id="${item.id}"] .cart-item-name`
+    );
+    nameEls.forEach(el => { el.textContent = getProductName(item); });
+
+    const unitEls = document.querySelectorAll(
+      `.cart-item[data-id="${item.id}"] .cart-item-unit`
+    );
+    unitEls.forEach(el => {
+      const unit = getUnitLabel(item);
+      el.textContent = unit ? t('quantity') + ': ' + unit : '';
+    });
+  });
+
+  // Re-render swipe delete labels
+  document.querySelectorAll('.swipe-delete-bg span[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+
+  // Update header count label
+  const count = cartItems.reduce((s, i) => s + i.quantity, 0);
+  document.getElementById('header-count').textContent = count > 0 ? `(${count})` : '';
+
+  // Update summary labels and delivery hint
+  updateSummary();
+
+  // Checkout button label (i18n.js handles data-i18n scan)
+});
+
+// ── Init ────────────────────────────────────────────────────
+function init() {
+  const lang = localStorage.getItem('lang') || 'bn';
+  if (window.i18n) window.i18n.setLanguage(lang);
+  if (window.cart) window.cart.renderCartBadge();
+
+  // Restore discount from session if coming back from checkout
+  const savedDiscount = sessionStorage.getItem('applied_discount');
+  if (savedDiscount) {
+    try {
+      _appliedDiscount = JSON.parse(savedDiscount);
+      if (_appliedDiscount) {
+        document.getElementById('applied-coupon-row').classList.add('show');
+        document.getElementById('applied-code-text').textContent = _appliedDiscount.code || '';
+      }
+    } catch(e) { _appliedDiscount = null; }
+  }
+
+  renderCart();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
