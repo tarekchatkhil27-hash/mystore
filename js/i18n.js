@@ -284,26 +284,22 @@ const translations = {
 // Sets the active language, updates the DOM, saves preference
 // ============================================================
 function setLanguage(lang) {
- // Replace the fontValue assignment in setLanguage() with:
-const fontValue = lang === 'bn'
-  ? "'Tiro Bangla', serif"
-  : "'Times New Roman', Times, serif";
+  if (lang !== 'en' && lang !== 'bn') lang = 'bn';
 
-
-  // 1. Save to localStorage
   localStorage.setItem('lang', lang);
 
-  // 2. Update <html> class and lang attribute
   const html = document.documentElement;
   html.classList.remove('lang-en', 'lang-bn');
   html.classList.add('lang-' + lang);
   html.setAttribute('lang', lang === 'bn' ? 'bn' : 'en');
 
-  // 3. Switch CSS font variable
+  // Only ONE fontValue declaration
   const fontValue = lang === 'bn'
     ? "'Tiro Bangla', serif"
     : "'Times New Roman', Times, serif";
   document.documentElement.style.setProperty('--font-body', fontValue);
+
+  // ... rest of function continues
 
   // 4. Update all data-i18n elements
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
