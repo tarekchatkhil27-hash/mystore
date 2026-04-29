@@ -267,7 +267,6 @@ const translations = {
 
 // ============================================================
 // FONT LOADER
-// Injects Google Fonts for both languages into <head>
 // ============================================================
 (function loadFonts() {
   const fontId = 'i18n-google-fonts';
@@ -281,7 +280,6 @@ const translations = {
 
 // ============================================================
 // setLanguage(lang)
-// Sets the active language, updates the DOM, saves preference
 // ============================================================
 function setLanguage(lang) {
   if (lang !== 'en' && lang !== 'bn') lang = 'bn';
@@ -293,46 +291,40 @@ function setLanguage(lang) {
   html.classList.add('lang-' + lang);
   html.setAttribute('lang', lang === 'bn' ? 'bn' : 'en');
 
-  // Only ONE fontValue declaration
   const fontValue = lang === 'bn'
     ? "'Tiro Bangla', serif"
     : "'Times New Roman', Times, serif";
   document.documentElement.style.setProperty('--font-body', fontValue);
 
-  // ... rest of function continues
-
-  // 4. Update all data-i18n elements
+  // Update all data-i18n elements
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     const key = el.getAttribute('data-i18n');
     const vars = {};
-    // Check for data-i18n-n for {n} replacement
     const nVal = el.getAttribute('data-i18n-n');
     if (nVal !== null) vars.n = nVal;
-    const translated = t(key, vars, lang);
+    const translated = translate(key, vars, lang);
     if (translated) el.textContent = translated;
   });
 
-  // 5. Update all data-i18n-placeholder elements
+  // Update all data-i18n-placeholder elements
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
     const key = el.getAttribute('data-i18n-placeholder');
-    const translated = t(key, {}, lang);
+    const translated = translate(key, {}, lang);
     if (translated) el.placeholder = translated;
   });
 
-  // 6. Update all data-i18n-title elements (for tooltips)
+  // Update all data-i18n-title elements
   document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
     const key = el.getAttribute('data-i18n-title');
-    const translated = t(key, {}, lang);
+    const translated = translate(key, {}, lang);
     if (translated) el.title = translated;
   });
 
-  // 7. Dispatch custom event so other scripts can react
   window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
 }
 
 // ============================================================
 // toggleLanguage()
-// Flips between 'bn' and 'en'
 // ============================================================
 function toggleLanguage() {
   const current = localStorage.getItem('lang') || 'bn';
@@ -341,12 +333,8 @@ function toggleLanguage() {
 }
 
 // ============================================================
-// t(key, vars, forceLang)
-// Returns the translated string for a key
-// Replaces {n} with vars.n if provided
-// Falls back to English if Bangla key is missing
+// translate(key, vars, forceLang)  <-- renamed from t
 // ============================================================
-// Replace the old "function t(key, vars, forceLang) {" with:
 function translate(key, vars, forceLang) {
   const lang = forceLang || localStorage.getItem('lang') || 'bn';
   let str = (translations[lang] && translations[lang][key])
@@ -361,29 +349,17 @@ function translate(key, vars, forceLang) {
   return str;
 }
 
-// Then, at the end of the file, inside window.i18n:
-window.i18n = {
-  setLanguage:    setLanguage,
-  toggleLanguage: toggleLanguage,
-  t:              translate,   // <-- use translate here
-  getLang:        getLang,
-  translations:   translations
-};
-
 // ============================================================
 // getLang()
-// Returns the current active language code
 // ============================================================
 function getLang() {
   return localStorage.getItem('lang') || 'bn';
 }
 
 // ============================================================
-// ON PAGE LOAD
-// Read saved preference and apply immediately
+// INIT
 // ============================================================
 (function init() {
-  // Wait for DOM to be ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       const savedLang = localStorage.getItem('lang') || 'bn';
@@ -396,12 +372,12 @@ function getLang() {
 })();
 
 // ============================================================
-// EXPORT to window
+// EXPORT to window.i18n
 // ============================================================
 window.i18n = {
   setLanguage:    setLanguage,
   toggleLanguage: toggleLanguage,
-  t:              t,
+  t:              translate,   // <-- expose as window.i18n.t
   getLang:        getLang,
   translations:   translations
 };
